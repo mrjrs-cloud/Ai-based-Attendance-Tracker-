@@ -1,0 +1,1872 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>Attendance Tracker Pro</title>
+<style>
+:root {
+  --p: #0071e3;
+  --p-dark: #005bb5;
+  --p-light: #e8f2ff;
+  --bg: #0c101c;
+  --bg-gradient:
+    radial-gradient(1000px 700px at 15% 10%, rgba(0, 113, 227, 0.22), transparent 60%),
+    radial-gradient(850px 600px at 85% 20%, rgba(94, 92, 230, 0.20), transparent 55%),
+    radial-gradient(700px 500px at 50% 90%, rgba(52, 199, 89, 0.14), transparent 55%),
+    linear-gradient(160deg, #070a12 0%, #0d1424 50%, #080c16 100%);
+  --card-glass: rgba(22, 30, 49, 0.72);
+  --card-subtle: rgba(255, 255, 255, 0.06);
+  --card-bd: rgba(255, 255, 255, 0.14);
+  --card-shadow: 0 16px 40px rgba(0, 0, 0, 0.45), inset 0 1px 1px rgba(255, 255, 255, 0.18), inset 0 -1px 1px rgba(0, 0, 0, 0.35);
+  --txt: #f5f5f7;
+  --muted: #98989d;
+  --bd: rgba(255, 255, 255, 0.12);
+  --ok: #34c759;
+  --ok-bg: rgba(52, 199, 89, 0.18);
+  --ok-bd: rgba(52, 199, 89, 0.45);
+  --warn: #ff9f0a;
+  --warn-bg: rgba(255, 159, 10, 0.2);
+  --danger: #ff453a;
+  --danger-bg: rgba(255, 69, 58, 0.2);
+  --hero-bg: linear-gradient(135deg, rgba(0, 113, 227, 0.88), rgba(88, 86, 214, 0.82), rgba(0, 199, 190, 0.75));
+  --hero-txt: #ffffff;
+}
+
+body.light {
+  --bg: #f2f5fc;
+  --bg-gradient:
+    radial-gradient(1100px 750px at 15% 10%, rgba(0, 113, 227, 0.28), transparent 60%),
+    radial-gradient(900px 650px at 85% 15%, rgba(175, 82, 222, 0.22), transparent 55%),
+    radial-gradient(800px 600px at 50% 95%, rgba(52, 199, 89, 0.20), transparent 55%),
+    linear-gradient(155deg, #f5f8ff 0%, #eaf0fb 50%, #edf3fc 100%);
+  --card-glass: rgba(255, 255, 255, 0.72);
+  --card-subtle: rgba(255, 255, 255, 0.52);
+  --card-bd: rgba(255, 255, 255, 0.8);
+  --card-shadow: 0 16px 36px rgba(0, 40, 100, 0.08), inset 0 1px 1.5px rgba(255, 255, 255, 0.95), inset 0 -1px 1px rgba(0, 0, 0, 0.04);
+  --txt: #1d1d1f;
+  --muted: #6e6e73;
+  --bd: rgba(210, 222, 240, 0.7);
+  --ok: #34c759;
+  --ok-bg: rgba(52, 199, 89, 0.16);
+  --ok-bd: rgba(52, 199, 89, 0.45);
+  --warn-bg: rgba(255, 149, 0, 0.16);
+  --danger-bg: rgba(255, 59, 48, 0.16);
+  --hero-bg: linear-gradient(135deg, rgba(0, 113, 227, 0.92), rgba(88, 86, 214, 0.88));
+  --hero-txt: #ffffff;
+}
+
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+body {
+  margin: 0;
+  background: var(--bg);
+  background-image: var(--bg-gradient);
+  background-attachment: fixed;
+  background-size: cover;
+  color: var(--txt);
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Roboto, sans-serif;
+  line-height: 1.4;
+  padding-bottom: 105px;
+  min-height: 100vh;
+  transition: background 0.35s cubic-bezier(0.2, 0.8, 0.2, 1), color 0.35s ease;
+  letter-spacing: -0.01em;
+}
+
+/* Apple Floating Liquid Glass Header */
+header {
+  position: sticky;
+  top: 10px;
+  margin: 10px 14px 0 14px;
+  z-index: 25;
+  background: var(--card-glass);
+  border: 1px solid var(--card-bd);
+  border-radius: 9999px;
+  padding: 10px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  backdrop-filter: blur(36px) saturate(200%);
+  -webkit-backdrop-filter: blur(36px) saturate(200%);
+  box-shadow: var(--card-shadow);
+  transition: all 0.3s ease;
+}
+
+h1 {
+  font-size: 17.5px;
+  font-weight: 700;
+  margin: 0;
+  letter-spacing: -0.02em;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+h1 span {
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.15));
+}
+
+.actions { display: flex; gap: 6px; align-items: center; }
+
+/* Apple Liquid Pill Buttons */
+.btn {
+  border: 1px solid var(--card-bd);
+  border-radius: 9999px;
+  padding: 8px 14px;
+  font-weight: 600;
+  font-size: 13px;
+  background: var(--card-subtle);
+  color: var(--txt);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: transform 0.18s cubic-bezier(0.2, 0.8, 0.2, 1.2), background 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  user-select: none;
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06), inset 0 1px 1px rgba(255, 255, 255, 0.25);
+}
+.btn:active { transform: scale(0.95); }
+.btn.primary {
+  background: linear-gradient(180deg, #0077ed 0%, #0062cc 100%);
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 6px 20px rgba(0, 113, 227, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.5);
+}
+.btn.danger {
+  background: var(--danger-bg);
+  color: var(--danger);
+  border-color: rgba(255, 69, 58, 0.3);
+}
+.btn.success {
+  background: linear-gradient(180deg, #34c759 0%, #28a745 100%);
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.4);
+  box-shadow: 0 6px 20px rgba(52, 199, 89, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.6);
+}
+
+.container { max-width: 860px; margin: auto; padding: 14px; }
+
+/* Apple Liquid Minimal AI Tracker Hero */
+.scanner-hero {
+  background: var(--card-glass);
+  border: 1px solid var(--card-bd);
+  border-radius: 24px;
+  padding: 16px 18px;
+  margin-top: 6px;
+  margin-bottom: 14px;
+  box-shadow: var(--card-shadow);
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(36px) saturate(200%);
+  -webkit-backdrop-filter: blur(36px) saturate(200%);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.scanner-hero-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2px;
+}
+.scanner-hero-title {
+  font-size: 16.5px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--txt);
+}
+.scanner-hero-title span {
+  font-size: 19px;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.15));
+}
+.scanner-hero-badge {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 9999px;
+  background: rgba(0, 113, 227, 0.14);
+  color: var(--p);
+  border: 1px solid rgba(0, 113, 227, 0.25);
+  letter-spacing: 0.02em;
+}
+
+/* Apple Glossy Liquid Pill Upload Button */
+.glossy-upload-btn {
+  width: 100%;
+  padding: 13px 18px;
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  background: linear-gradient(180deg, #0077ed 0%, #005bb5 100%);
+  color: #ffffff;
+  font-size: 14.5px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 0 8px 24px rgba(0, 113, 227, 0.4), inset 0 1.5px 2px rgba(255, 255, 255, 0.7), inset 0 -1.5px 2px rgba(0, 0, 0, 0.25);
+  transition: transform 0.18s cubic-bezier(0.2, 0.8, 0.2, 1.2), box-shadow 0.2s ease, opacity 0.15s ease;
+  user-select: none;
+}
+.glossy-upload-btn:active {
+  transform: scale(0.975);
+  box-shadow: 0 4px 12px rgba(0, 113, 227, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.4);
+}
+
+/* Apple Liquid Stats Glass Island */
+.stats {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: var(--card-glass);
+  border: 1px solid var(--card-bd);
+  border-radius: 24px;
+  padding: 16px 18px;
+  margin-bottom: 12px;
+  box-shadow: var(--card-shadow);
+  backdrop-filter: blur(36px) saturate(200%);
+  -webkit-backdrop-filter: blur(36px) saturate(200%);
+}
+
+.ring {
+  width: 62px;
+  height: 62px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: conic-gradient(var(--ok) var(--pct), rgba(120, 120, 128, 0.24) 0);
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(52, 199, 89, 0.25), inset 0 1px 1px rgba(255, 255, 255, 0.3);
+  transition: all 0.3s ease;
+}
+.ring:after {
+  content: "";
+  grid-area: 1/1;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--card-glass);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 1px rgba(255, 255, 255, 0.3);
+}
+.ring span {
+  grid-area: 1/1;
+  z-index: 1;
+  font-size: 13.5px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+.stat { flex: 1; min-width: 0; }
+.stat b { font-size: 16px; font-weight: 700; display: block; letter-spacing: -0.01em; }
+.muted { color: var(--muted); font-size: 12.5px; }
+
+/* Apple Liquid Tabs & Search */
+.tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+  overflow-x: auto;
+  padding: 4px 2px;
+  scrollbar-width: none;
+}
+.tabs::-webkit-scrollbar { display: none; }
+.tabs button { white-space: nowrap; flex-shrink: 0; }
+
+.search { margin: 8px 0 14px 0; }
+.search input, .modal input, select, textarea {
+  width: 100%;
+  padding: 13px 18px;
+  border: 1px solid var(--card-bd);
+  border-radius: 9999px;
+  background: var(--card-glass);
+  color: var(--txt);
+  font-size: 14px;
+  outline: 0;
+  transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+  backdrop-filter: blur(30px) saturate(180%);
+  -webkit-backdrop-filter: blur(30px) saturate(180%);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.06), 0 4px 12px rgba(0, 0, 0, 0.04);
+}
+.search input:focus, .modal input:focus {
+  border-color: var(--p);
+  box-shadow: 0 0 0 3.5px rgba(0, 113, 227, 0.28), inset 0 2px 4px rgba(0, 0, 0, 0.06);
+}
+
+/* Apple Liquid Glass Student Card Items */
+.list { display: flex; flex-direction: column; gap: 9px; }
+.student {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 16px;
+  border: 1px solid var(--card-bd);
+  background: var(--card-glass);
+  border-radius: 20px;
+  cursor: pointer;
+  box-shadow: var(--card-shadow);
+  backdrop-filter: blur(36px) saturate(200%);
+  -webkit-backdrop-filter: blur(36px) saturate(200%);
+  transition: transform 0.18s cubic-bezier(0.2, 0.8, 0.2, 1.2), box-shadow 0.2s ease, border-color 0.2s ease, background 0.25s ease;
+  user-select: none;
+  position: relative;
+  overflow: hidden;
+}
+.student:active { transform: scale(0.985); }
+.student.present {
+  background: var(--ok-bg);
+  border-color: var(--ok-bd);
+  box-shadow: 0 8px 24px rgba(52, 199, 89, 0.2), inset 0 1px 1.5px rgba(255, 255, 255, 0.4);
+}
+
+/* Liquid Orb Roll Badge */
+.roll {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: rgba(142, 142, 147, 0.18);
+  font-weight: 800;
+  font-size: 13.5px;
+  flex-shrink: 0;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.4), 0 3px 8px rgba(0,0,0,0.06);
+  transition: background 0.25s ease, color 0.25s ease, transform 0.2s ease;
+}
+.present .roll {
+  background: linear-gradient(180deg, #34c759 0%, #28a745 100%);
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.5);
+  box-shadow: 0 4px 14px rgba(52, 199, 89, 0.45), inset 0 1px 1px rgba(255, 255, 255, 0.6);
+  transform: scale(1.04);
+}
+
+.info { flex: 1; min-width: 0; }
+.name { font-weight: 700; font-size: 14.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; letter-spacing: -0.01em; }
+.id { font-size: 12px; color: var(--muted); margin-top: 2px; }
+.pctsmall { font-size: 12px; font-weight: 700; color: var(--muted); margin-right: 6px; }
+
+/* 🌟 True Apple Liquid Bubble Switch (Exact Match to Reference Video & Images) */
+.switch {
+  width: 52px;
+  height: 30px;
+  background: rgba(142, 142, 147, 0.24);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 9999px;
+  padding: 3px;
+  transition: background 0.28s cubic-bezier(0.2, 0.9, 0.25, 1), box-shadow 0.28s ease, border-color 0.28s ease;
+  flex-shrink: 0;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), inset 0 1px 1px rgba(255, 255, 255, 0.15);
+  cursor: pointer;
+  position: relative;
+}
+.thumb {
+  height: 22px;
+  width: 22px;
+  background: #ffffff;
+  border-radius: 50%;
+  transition: transform 0.28s cubic-bezier(0.2, 0.9, 0.25, 1.25);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.25), inset 0 1px 1px #ffffff, inset 0 -1px 1px rgba(0, 0, 0, 0.12);
+}
+.switch.on {
+  background: linear-gradient(180deg, #34c759 0%, #28a745 100%);
+  border-color: rgba(255, 255, 255, 0.45);
+  box-shadow: 0 4px 16px rgba(52, 199, 89, 0.45), inset 0 2px 3px rgba(255, 255, 255, 0.7), inset 0 -1px 2px rgba(0, 0, 0, 0.15);
+}
+.switch.on .thumb {
+  transform: translateX(22px);
+}
+.chevron { color: var(--muted); font-size: 22px; line-height: 1; margin-left: 2px; }
+
+/* 🌟 Apple VisionOS Floating Liquid Dock (Bottom Action Bar) */
+.bottom {
+  position: fixed;
+  bottom: 14px;
+  left: 14px;
+  right: 14px;
+  max-width: 820px;
+  margin: 0 auto;
+  background: var(--card-glass);
+  border: 1px solid var(--card-bd);
+  border-radius: 9999px;
+  padding: 10px 14px;
+  display: flex;
+  gap: 10px;
+  z-index: 30;
+  backdrop-filter: blur(40px) saturate(220%);
+  -webkit-backdrop-filter: blur(40px) saturate(220%);
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.3), inset 0 1px 1.5px rgba(255, 255, 255, 0.4);
+}
+.bottom .btn { flex: 1; padding: 12px 10px; font-weight: 700; font-size: 13px; }
+
+/* VisionOS Liquid Modals */
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+  padding: 16px;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+.modal.show { display: flex; }
+.box {
+  background: var(--card-glass);
+  color: var(--txt);
+  width: min(620px, 100%);
+  max-height: 90vh;
+  overflow-y: auto;
+  border-radius: 26px;
+  padding: 24px;
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5), inset 0 1px 1.5px rgba(255, 255, 255, 0.35);
+  border: 1px solid var(--card-bd);
+  backdrop-filter: blur(40px) saturate(220%);
+  -webkit-backdrop-filter: blur(40px) saturate(220%);
+  animation: modalEnter 0.26s cubic-bezier(0.16, 1, 0.3, 1);
+}
+@keyframes modalEnter {
+  from { opacity: 0; transform: scale(0.94) translateY(12px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+.box h2 { margin-top: 0; font-size: 20px; font-weight: 800; letter-spacing: -0.02em; display: flex; align-items: center; gap: 8px; }
+.row { display: flex; gap: 10px; margin-top: 12px; }
+.row > * { flex: 1; }
+
+.empty { text-align: center; padding: 40px 16px; color: var(--muted); font-size: 14px; }
+.historyItem {
+  border: 1px solid var(--card-bd);
+  border-radius: 18px;
+  padding: 14px;
+  margin: 10px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--card-subtle);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: var(--card-shadow);
+}
+
+/* AI Scanner Modal & Review UI */
+.aiDrop {
+  border: 2px dashed rgba(0, 113, 227, 0.6);
+  border-radius: 20px;
+  padding: 26px 18px;
+  text-align: center;
+  background: rgba(0, 113, 227, 0.08);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: block;
+  margin-top: 12px;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+.aiDrop.drag {
+  background: rgba(0, 113, 227, 0.18);
+  border-color: #0071e3;
+  transform: scale(1.01);
+}
+.aiDropIcon { font-size: 38px; margin-bottom: 6px; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.15)); }
+
+.aiFileList {
+  font-size: 12.5px;
+  color: var(--muted);
+  margin-top: 10px;
+  max-height: 90px;
+  overflow-y: auto;
+  background: var(--card-subtle);
+  padding: 10px 14px;
+  border-radius: 14px;
+  border: 1px solid var(--card-bd);
+}
+
+.aiProgress {
+  height: 8px;
+  background: rgba(142, 142, 147, 0.2);
+  border-radius: 9999px;
+  overflow: hidden;
+  margin: 14px 0 8px 0;
+}
+.aiProgress > div {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #0071e3, #34c759);
+  transition: width 0.25s ease;
+  box-shadow: 0 0 10px rgba(52, 199, 89, 0.6);
+}
+.aiStatus {
+  font-size: 12.5px;
+  color: var(--muted);
+  min-height: 20px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+}
+
+/* Sections for Matched vs Unmatched */
+.review-section { margin-top: 18px; }
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1.5px solid var(--card-bd);
+  margin-bottom: 10px;
+}
+.section-title {
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.section-title.exact { color: var(--ok); }
+.section-title.review { color: var(--warn); }
+.section-count {
+  font-size: 12px;
+  font-weight: 800;
+  padding: 2px 9px;
+  border-radius: 9999px;
+  background: var(--card-subtle);
+}
+.exact .section-count { background: var(--ok-bg); color: var(--ok); border: 1px solid var(--ok-bd); }
+.review .section-count { background: var(--warn-bg); color: var(--warn); border: 1px solid rgba(255, 159, 10, 0.35); }
+
+.aiRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border: 1px solid var(--card-bd);
+  border-radius: 16px;
+  padding: 12px 14px;
+  margin: 8px 0;
+  background: var(--card-glass);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  box-shadow: var(--card-shadow);
+  transition: background 0.15s, border-color 0.15s;
+}
+.aiRow.matched { border-left: 5px solid var(--ok); }
+.aiRow.unmatched { border-left: 5px solid var(--warn); background: var(--card-subtle); }
+
+.aiRow input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  accent-color: var(--ok);
+  cursor: pointer;
+}
+.aiMain { flex: 1; min-width: 0; }
+.aiMain b { font-size: 13.5px; font-weight: 700; display: block; word-break: break-word; }
+.aiMeta { font-size: 11.5px; color: var(--muted); margin-top: 3px; line-height: 1.35; }
+.aiBadge {
+  font-size: 11px;
+  font-weight: 700;
+  border-radius: 9999px;
+  padding: 4px 9px;
+  background: var(--card-subtle);
+  color: var(--txt);
+  white-space: nowrap;
+  flex-shrink: 0;
+  border: 1px solid var(--card-bd);
+}
+.aiBadge.good { background: var(--ok-bg); color: var(--ok); border-color: var(--ok-bd); }
+.aiBadge.warn { background: var(--warn-bg); color: var(--warn); border-color: rgba(255, 159, 10, 0.4); }
+.aiBadge.danger { background: var(--danger-bg); color: var(--danger); }
+
+/* Banner notice */
+.notice-box {
+  background: rgba(0, 113, 227, 0.12);
+  border: 1px solid rgba(0, 113, 227, 0.3);
+  border-radius: 16px;
+  padding: 12px 16px;
+  margin: 12px 0;
+  font-size: 12.5px;
+  line-height: 1.45;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+@media(max-width: 600px) {
+  h1 { font-size: 16px; }
+  .actions .hide { display: none; }
+  .name { font-size: 13.5px; }
+  header { padding: 8px 14px; margin: 8px 10px 0 10px; }
+  .actions { gap: 4px; }
+  .actions .btn { padding: 7px 10px; font-size: 12px; }
+  .bottom { bottom: 10px; left: 10px; right: 10px; padding: 8px 10px; }
+  .bottom .btn { padding: 11px 6px; font-size: 12px; }
+  .scanner-actions { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <h1><span>📋</span> Attendance Tracker</h1>
+  <div class="actions">
+    <button class="btn hide" onclick="newDay()">＋ New Day</button>
+    <button class="btn" onclick="openHistory()">📅 History</button>
+    <button class="btn" onclick="openApiKeyModal()">🔑 API Key</button>
+    <button class="btn" onclick="toggleDark()" title="Toggle Liquid Light/Dark Mode" id="themeToggleBtn">🌓</button>
+  </div>
+</header>
+
+<div class="container">
+
+  <!-- Minimal Classic AI Attendance Tracker Hero Card -->
+  <div class="scanner-hero">
+    <div class="scanner-hero-top">
+      <div class="scanner-hero-title">
+        <span>✨</span> AI Attendance Tracker
+      </div>
+      <span class="scanner-hero-badge">AI Vision</span>
+    </div>
+    
+    <input type="file" id="heroPhotoInput" accept="image/*" multiple style="display:none" onchange="handleHeroPhotoUpload(this.files)">
+    
+    <button class="glossy-upload-btn" onclick="triggerHeroUpload()" title="Upload photo to track attendance">
+      <span>📷</span> Upload
+    </button>
+  </div>
+
+  <!-- Stats Card -->
+  <div class="stats">
+    <div class="ring" id="ring"><span id="pct">0%</span></div>
+    <div class="stat">
+      <b id="dateTitle">Batch 28 | Section A</b>
+      <div class="muted" id="summary">0 Present • 0 Absent • 0 Total</div>
+    </div>
+    <button class="btn" onclick="selectAll()">Toggle All</button>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="btn" id="tabAll" onclick="setFilter(false)">All Students</button>
+    <button class="btn" id="tabPresent" onclick="setFilter(true)">Present Only</button>
+    <button class="btn primary" onclick="openManage()">✏️ Manage Students</button>
+    <button class="btn" onclick="openAIScanner('meet')">🤖 AI Scan</button>
+  </div>
+
+  <!-- Search -->
+  <div class="search">
+    <input id="search" placeholder="Search roll, name or student ID..." oninput="render()">
+  </div>
+
+  <!-- Student List -->
+  <div id="list" class="list"></div>
+</div>
+
+<!-- Bottom Fixed Action Bar -->
+<div class="bottom">
+  <button class="btn danger" onclick="resetDay()">RESET</button>
+  <button class="btn" onclick="shareWhatsApp()">WHATSAPP</button>
+  <button class="btn primary" onclick="copyAttendance()">COPY ATTENDANCE</button>
+</div>
+
+<!-- Modal Container -->
+<div id="modal" class="modal" onclick="if(event.target===this)closeModal()">
+  <div class="box" id="modalBox"></div>
+</div>
+
+<script>
+// Default Student Database (Batch 28, Section A)
+const defaultStudents = [
+  {"serial": 1, "name": "MD. LEON MIAH", "studentId": "2261461001"},
+  {"serial": 2, "name": "SHANTO KUMAR SARKER", "studentId": "2261461002"},
+  {"serial": 3, "name": "MD. ROKAN MIA", "studentId": "2261461003"},
+  {"serial": 4, "name": "MD. SHADIKIN RAHMAN", "studentId": "2261461004"},
+  {"serial": 5, "name": "MD. IMTIAZ AHMED SIAM", "studentId": "2261461005"},
+  {"serial": 6, "name": "MEHEDI HASAN PAPPU", "studentId": "2261461006"},
+  {"serial": 7, "name": "SAWROV CHANDRA DASH", "studentId": "2261461007"},
+  {"serial": 8, "name": "MD. MEZZAUL ZAMAN RAJU", "studentId": "2261461008"},
+  {"serial": 9, "name": "YEASHAM ZAMAN KHAN JOSAN", "studentId": "2261461009"},
+  {"serial": 10, "name": "OLIULLAH", "studentId": "2261461010"},
+  {"serial": 11, "name": "MD. LEON", "studentId": "2261461011"},
+  {"serial": 12, "name": "MD. RAJIB HOSSAIN", "studentId": "2261461012"},
+  {"serial": 13, "name": "MD. SHAKIL HASAN", "studentId": "2261461013"},
+  {"serial": 14, "name": "MST. SHIMA KHATUN", "studentId": "2261461014"},
+  {"serial": 15, "name": "MD. ASHIK SHARIAR", "studentId": "2261461015"},
+  {"serial": 16, "name": "MITHUN DEBNATH", "studentId": "2261461016"},
+  {"serial": 17, "name": "SOUVIK SARKAR", "studentId": "2261461017"},
+  {"serial": 18, "name": "MD. SABUZ HOSSAN", "studentId": "2261461018"},
+  {"serial": 19, "name": "MD. TAWFIQ HASAN", "studentId": "2261461019"},
+  {"serial": 20, "name": "DHANJAY KUMAR", "studentId": "2261461020"},
+  {"serial": 21, "name": "GOBINDA CHANDRA", "studentId": "2261461021"},
+  {"serial": 22, "name": "SUMON AHMED", "studentId": "2261461022"},
+  {"serial": 23, "name": "EMRUL KAYES BIPU", "studentId": "2261461023"},
+  {"serial": 24, "name": "ATIK AHAMMED RUMAN", "studentId": "2261461024"},
+  {"serial": 25, "name": "MD. AKRAM MIA", "studentId": "2261461025"},
+  {"serial": 26, "name": "MD. ARIF HOSSAIN", "studentId": "2261461026"},
+  {"serial": 27, "name": "SHEIAK RAKIB", "studentId": "2261461027"},
+  {"serial": 28, "name": "MD. JOYNAL ABADIN", "studentId": "2261461028"},
+  {"serial": 29, "name": "NUSRAT JAHAN FARIHA", "studentId": "2261461029"},
+  {"serial": 30, "name": "KAPILDEV HALDER", "studentId": "2261461030"},
+  {"serial": 31, "name": "MD. AHADUL ISLAM MAHIN", "studentId": "2261461031"},
+  {"serial": 32, "name": "MD. MAHIBE JAHIR", "studentId": "2261461032"},
+  {"serial": 33, "name": "MD. RATUL HASAN", "studentId": "2261461033"},
+  {"serial": 34, "name": "MST. KARIMA TABASSUM", "studentId": "2261461034"},
+  {"serial": 35, "name": "JANNATUL FARDOUS", "studentId": "2261461035"},
+  {"serial": 36, "name": "MD. IBRAHIM KHAN", "studentId": "2261461036"},
+  {"serial": 37, "name": "MOHAMMAD LIMON SHAKE", "studentId": "2261461037"},
+  {"serial": 38, "name": "SABBIR AHHAMAD SAYEF", "studentId": "2261461038"},
+  {"serial": 39, "name": "MEHEDI HASAN LIMON", "studentId": "2261461039"},
+  {"serial": 40, "name": "NAHID HASAN", "studentId": "2261461040"},
+  {"serial": 41, "name": "NAYEEM HASAN", "studentId": "2261461041"},
+  {"serial": 42, "name": "MD. GOLAM RUBAIT", "studentId": "2261461042"},
+  {"serial": 43, "name": "MD. AYAN SHAHRIAR", "studentId": "2261461043"},
+  {"serial": 44, "name": "SUSHANTO CHANDRAY ROY", "studentId": "2261461044"},
+  {"serial": 45, "name": "MD. ABDUL KUDDUS", "studentId": "2261461045"},
+  {"serial": 46, "name": "JOY HALDER", "studentId": "2261461046"},
+  {"serial": 47, "name": "MD. SHAKH SHAHZALAL", "studentId": "2261461047"},
+  {"serial": 48, "name": "MD. MAHABUB HASAN MIRAJ", "studentId": "2261461048"},
+  {"serial": 49, "name": "Sima Khatun", "studentId": "2261461049"},
+  {"serial": 50, "name": "ASHIKUR RAHMAN", "studentId": "2261461050"},
+  {"serial": 51, "name": "SOBUJ RANA", "studentId": "2261461051"},
+  {"serial": 52, "name": "MD. AL-AMIN", "studentId": "2261461052"},
+  {"serial": 53, "name": "MD. GOLAM ROBBANI", "studentId": "2261461053"},
+  {"serial": 54, "name": "MD. JUBAID HASSAN PARVEZ", "studentId": "2261461054"},
+  {"serial": 55, "name": "MD. JAHID HASAN", "studentId": "2261461055"}
+];
+
+// App State from LocalStorage
+let students = JSON.parse(localStorage.getItem("at_students") || "null") || defaultStudents;
+let records = JSON.parse(localStorage.getItem("at_records") || "{}");
+let savedDate = localStorage.getItem("at_date");
+let currentDate = todayKey();
+let present = new Set(records[currentDate] || []);
+if (savedDate !== currentDate) localStorage.setItem("at_date", currentDate);
+
+let presentOnly = false;
+let editSerial = null;
+let customApiKey = localStorage.getItem("at_gemini_api_key") || "";
+
+function todayKey() {
+  return new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Dhaka" }).format(new Date());
+}
+
+function save() {
+  const now = todayKey();
+  if (currentDate !== now) {
+    currentDate = now;
+    present = new Set(records[currentDate] || []);
+  }
+  records[currentDate] = [...present];
+  localStorage.setItem("at_records", JSON.stringify(records));
+  localStorage.setItem("at_students", JSON.stringify(students));
+  localStorage.setItem("at_date", currentDate);
+}
+
+function fmt(k) {
+  if (!k || typeof k !== "string") return "";
+  let [y, m, d] = k.split("-");
+  return `${d}/${m}/${y}`;
+}
+
+let isLightMode = localStorage.getItem("at_liquid_light") === "true";
+
+function applyLiquidMode() {
+  if (isLightMode) {
+    document.body.classList.add("light");
+    const btn = document.getElementById("themeToggleBtn");
+    if (btn) btn.textContent = "☀️";
+  } else {
+    document.body.classList.remove("light");
+    const btn = document.getElementById("themeToggleBtn");
+    if (btn) btn.textContent = "🌙";
+  }
+}
+
+function toggleDark() {
+  isLightMode = !isLightMode;
+  localStorage.setItem("at_liquid_light", isLightMode ? "true" : "false");
+  applyLiquidMode();
+}
+
+// Initialize Liquid Mode
+applyLiquidMode();
+
+function isP(s) {
+  return present.has(s.serial);
+}
+
+function render() {
+  let q = (document.getElementById("search")?.value || "").toLowerCase().trim();
+  let arr = students.filter(s =>
+    (!presentOnly || isP(s)) &&
+    (s.name.toLowerCase().includes(q) || String(s.serial).includes(q) || (s.studentId && s.studentId.toLowerCase().includes(q)))
+  );
+
+  let total = students.length;
+  let count = present.size;
+  let pc = total ? Math.round((count / total) * 100) : 0;
+
+  const dateTitleEl = document.getElementById("dateTitle");
+  if (dateTitleEl) dateTitleEl.textContent = `Batch 28 | Section A • ${fmt(currentDate)}`;
+
+  const summaryEl = document.getElementById("summary");
+  if (summaryEl) summaryEl.textContent = `${count} Present • ${total - count} Absent • ${total} Total`;
+
+  const pctEl = document.getElementById("pct");
+  if (pctEl) pctEl.textContent = pc + "%";
+
+  const ringEl = document.getElementById("ring");
+  if (ringEl) ringEl.style.setProperty("--pct", pc + "%");
+
+  const listEl = document.getElementById("list");
+  if (!listEl) return;
+
+  listEl.innerHTML = arr.length ? arr.map(s => `
+    <div class="student ${isP(s) ? "present" : ""}" onclick="toggle(${s.serial})">
+      <div class="roll">${String(s.serial).padStart(2, "0")}</div>
+      <div class="info">
+        <div class="name">${esc(s.name)}</div>
+        <div class="id">ID: ${esc(s.studentId || "N/A")}</div>
+      </div>
+      <div class="pctsmall">${studentPct(s.serial)}%</div>
+      <div class="switch ${isP(s) ? "on" : ""}" onclick="event.stopPropagation();toggle(${s.serial})">
+        <div class="thumb"></div>
+      </div>
+      <span class="chevron">›</span>
+    </div>
+  `).join("") : '<div class="empty">No students found.</div>';
+}
+
+function esc(x) {
+  return String(x || "").replace(/[&<>"']/g, m => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[m]));
+}
+
+function toggle(n) {
+  if (present.has(n)) {
+    present.delete(n);
+  } else {
+    present.add(n);
+  }
+  save();
+  render();
+}
+
+function selectAll() {
+  if (present.size === students.length) {
+    present.clear();
+  } else {
+    students.forEach(s => present.add(s.serial));
+  }
+  save();
+  render();
+}
+
+function resetDay() {
+  if (confirm("Reset this day's attendance?")) {
+    present.clear();
+    save();
+    render();
+  }
+}
+
+function setFilter(v) {
+  presentOnly = v;
+  document.getElementById("tabAll")?.classList.toggle("primary", !v);
+  document.getElementById("tabPresent")?.classList.toggle("primary", v);
+  render();
+}
+
+function newDay() {
+  if (confirm("Start a new attendance day? Current day is already saved in history.")) {
+    currentDate = todayKey();
+    present = new Set(records[currentDate] || []);
+    save();
+    render();
+  }
+}
+
+function studentPct(serial) {
+  let student = students.find(s => s.serial === serial);
+  if (!student) return 0;
+  let total = 0, p = 0;
+  Object.keys(records).forEach(k => {
+    if (student.joinedDate && k < student.joinedDate) return;
+    total++;
+    if (records[k].includes(serial)) p++;
+  });
+  return total ? Math.round((p / total) * 100) : 0;
+}
+
+function copyText() {
+  let arr = students.filter(isP).sort((a, b) => a.serial - b.serial);
+  let t = `📌 ATTENDANCE REPORT\nDate: ${fmt(currentDate)}\nBatch: 28 | Section: A\nTotal Present: ${arr.length}/${students.length}\n\n----------------------------------------\nROLL      | NAME\n----------------------------------------\n`;
+  arr.forEach(s => {
+    t += `${String(s.serial).padEnd(10)}| ${s.name}\n`;
+  });
+  return t + "----------------------------------------\n\nSubmitted by: MD Ahadul Islam Mahin (CR)";
+}
+
+function copyAttendance() {
+  let t = copyText();
+  if (!present.size) {
+    alert("No students selected.");
+    return;
+  }
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(t)
+      .then(() => alert("Attendance copied to clipboard!"))
+      .catch(() => showCopy(t));
+  } else {
+    showCopy(t);
+  }
+}
+
+function shareWhatsApp() {
+  if (!present.size) {
+    alert("No students selected.");
+    return;
+  }
+  const text = copyText();
+  const url = "https://wa.me/?text=" + encodeURIComponent(text);
+  window.open(url, "_blank");
+}
+
+function showCopy(t) {
+  document.getElementById("modalBox").innerHTML = `
+    <h2>Attendance Ready</h2>
+    <p class="muted">Long press below to select and copy.</p>
+    <textarea id="copyArea" style="width:100%;height:260px;padding:10px">${t.replace(/</g, "&lt;")}</textarea>
+    <div class="row">
+      <button class="btn primary" onclick="manualCopy()">Copy</button>
+      <button class="btn" onclick="closeModal()">Close</button>
+    </div>
+  `;
+  document.getElementById("modal").classList.add("show");
+  document.getElementById("copyArea").focus();
+  document.getElementById("copyArea").select();
+}
+
+function manualCopy() {
+  let a = document.getElementById("copyArea");
+  a.select();
+  try {
+    document.execCommand("copy");
+    alert("Copied!");
+  } catch (e) {
+    alert("Text selected. Long press and Copy.");
+  }
+}
+
+function openHistory() {
+  let keys = Object.keys(records).sort().reverse();
+  document.getElementById("modalBox").innerHTML = `
+    <h2>📅 Attendance History</h2>
+    ${keys.length ? keys.map(k => `
+      <div class="historyItem">
+        <div>
+          <b>${fmt(k)}</b>
+          <div class="muted">${records[k].length}/${students.length} Present (${Math.round(records[k].length / students.length * 100 || 0)}%)</div>
+        </div>
+        <button class="btn primary" onclick="loadDay('${k}')">Open</button>
+      </div>
+    `).join("") : '<p class="muted">No attendance history yet.</p>'}
+    <div class="row">
+      <button class="btn" onclick="closeModal()">Close</button>
+    </div>
+  `;
+  document.getElementById("modal").classList.add("show");
+}
+
+function loadDay(k) {
+  currentDate = k;
+  present = new Set(records[k] || []);
+  save();
+  closeModal();
+  render();
+}
+
+function openManage() {
+  document.getElementById("modalBox").innerHTML = `
+    <h2>✏️ Manage Students</h2>
+    <button class="btn primary" style="width:100%;margin-bottom:12px" onclick="openStudentForm()">＋ Add New Student</button>
+    <div id="manageList" style="max-height: 50vh; overflow-y: auto;">
+      ${students.slice().sort((a, b) => a.serial - b.serial).map(s => `
+        <div class="historyItem">
+          <div>
+            <b>${String(s.serial).padStart(2, "0")} — ${esc(s.name)}</b>
+            <div class="muted">${esc(s.studentId)}</div>
+          </div>
+          <div class="row" style="margin:0">
+            <button class="btn" onclick="openStudentForm(${s.serial})">Edit</button>
+            <button class="btn danger" onclick="deleteStudentDirect(${s.serial})">Delete</button>
+          </div>
+        </div>
+      `).join("")}
+    </div>
+    <div class="row" style="margin-top:14px">
+      <button class="btn" onclick="exportBackup()">⬇️ Export Backup</button>
+      <button class="btn" onclick="document.getElementById('restoreInput').click()">⬆️ Restore Backup</button>
+    </div>
+    <input type="file" id="restoreInput" accept="application/json" style="display:none" onchange="importBackup(this)">
+    <div class="row">
+      <button class="btn" onclick="closeModal()">Close</button>
+    </div>
+  `;
+  document.getElementById("modal").classList.add("show");
+}
+
+function openStudentForm(serial = null) {
+  editSerial = serial;
+  let s = students.find(x => x.serial === serial);
+  document.getElementById("modalBox").innerHTML = `
+    <h2>${s ? "✏️ Edit Student" : "＋ Add Student"}</h2>
+    <label class="muted" style="display:block;margin-bottom:4px">Full Name</label>
+    <input id="sn" placeholder="e.g. MD. AHADUL ISLAM MAHIN" value="${s ? esc(s.name) : ""}"><br><br>
+    <label class="muted" style="display:block;margin-bottom:4px">Student ID</label>
+    <input id="si" placeholder="e.g. 2261461031" value="${s ? esc(s.studentId) : ""}"><br><br>
+    <label class="muted" style="display:block;margin-bottom:4px">Roll / Serial Number</label>
+    <input id="sr" type="number" placeholder="e.g. 31" value="${s ? s.serial : ""}">
+    <div class="row" style="margin-top:16px">
+      <button class="btn primary" onclick="saveStudent()">SAVE</button>
+      <button class="btn" onclick="openManage()">BACK</button>
+      ${s ? '<button class="btn danger" onclick="deleteStudent()">DELETE</button>' : ""}
+    </div>
+  `;
+  document.getElementById("modal").classList.add("show");
+}
+
+function saveStudent() {
+  let name = document.getElementById("sn").value.trim();
+  let id = document.getElementById("si").value.trim();
+  let roll = Number(document.getElementById("sr").value);
+  if (!name || !id || !roll) {
+    alert("Please fill all fields.");
+    return;
+  }
+  if (students.some(x => x.studentId === id && x.serial !== editSerial)) {
+    alert("This Student ID already exists.");
+    return;
+  }
+  if (editSerial !== null) {
+    let s = students.find(x => x.serial === editSerial);
+    if (roll !== editSerial && students.some(x => x.serial === roll)) {
+      alert("This roll already exists.");
+      return;
+    }
+    s.name = name;
+    s.studentId = id;
+    if (roll !== editSerial) {
+      s.serial = roll;
+      Object.keys(records).forEach(k => {
+        if (records[k].includes(editSerial)) {
+          records[k] = records[k].map(x => x === editSerial ? roll : x);
+        }
+      });
+      if (present.has(editSerial)) {
+        present.delete(editSerial);
+        present.add(roll);
+      }
+    }
+  } else {
+    if (students.some(x => x.serial === roll)) {
+      alert("This roll already exists.");
+      return;
+    }
+    students.push({ serial: roll, name, studentId: id, joinedDate: todayKey() });
+  }
+  save();
+  openManage();
+  render();
+}
+
+function deleteStudentDirect(serial) {
+  if (confirm("Delete this student permanently?")) {
+    students = students.filter(s => s.serial !== serial);
+    Object.keys(records).forEach(k => {
+      records[k] = records[k].filter(x => x !== serial);
+    });
+    present.delete(serial);
+    save();
+    openManage();
+    render();
+  }
+}
+
+function deleteStudent() {
+  deleteStudentDirect(editSerial);
+}
+
+function exportBackup() {
+  const data = { students, records, exportedAt: new Date().toISOString() };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `attendance-backup-${todayKey()}.json`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function importBackup(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const data = JSON.parse(e.target.result);
+      if (!Array.isArray(data.students) || typeof data.records !== "object" || data.records === null) {
+        throw new Error("Invalid structure");
+      }
+      if (!confirm("This will replace all current students and attendance records with the backup file. Continue?")) {
+        input.value = "";
+        return;
+      }
+      students = data.students;
+      records = data.records;
+      present = new Set(records[currentDate] || []);
+      save();
+      openManage();
+      render();
+      alert("Backup restored successfully!");
+    } catch (err) {
+      alert("Could not read this backup file. Please select a valid attendance-backup JSON file.");
+    }
+    input.value = "";
+  };
+  reader.readAsText(file);
+}
+
+function openApiKeyModal() {
+  document.getElementById("modalBox").innerHTML = `
+    <h2>🔑 Gemini Vision API Configuration</h2>
+    <p class="muted">Attendance Tracker Pro uses Gemini Vision for precise Google Meet participant extraction. In the Android App, the key is automatically injected via secure BuildConfig. If running in a web browser, enter your free Gemini API key below.</p>
+    <div class="notice-box">
+      🛡️ <b>Privacy &amp; Security</b>: Your API key is stored only on your local device. Standard attendance tracking works 100% offline without any API key or internet.
+    </div>
+    <label class="muted" style="display:block;margin:10px 0 4px 0">Gemini API Key</label>
+    <input id="customApiKeyInput" type="password" placeholder="AIzaSy..." value="${esc(customApiKey)}">
+    <div class="row" style="margin-top:16px">
+      <button class="btn primary" onclick="saveApiKey()">Save API Key</button>
+      <button class="btn" onclick="clearApiKey()">Clear Key</button>
+      <button class="btn" onclick="closeModal()">Close</button>
+    </div>
+  `;
+  document.getElementById("modal").classList.add("show");
+}
+
+function saveApiKey() {
+  const val = document.getElementById("customApiKeyInput").value.trim();
+  customApiKey = val;
+  if (val) {
+    localStorage.setItem("at_gemini_api_key", val);
+    alert("Gemini API Key saved!");
+  } else {
+    localStorage.removeItem("at_gemini_api_key");
+    alert("API Key cleared.");
+  }
+  closeModal();
+}
+
+function clearApiKey() {
+  customApiKey = "";
+  localStorage.removeItem("at_gemini_api_key");
+  document.getElementById("customApiKeyInput").value = "";
+  alert("API Key removed.");
+}
+
+function closeModal() {
+  document.getElementById("modal").classList.remove("show");
+}
+
+/* =========================================================================
+   AI VISION ATTENDANCE SCANNER & 100% EXACT MATCH ENGINE
+   ========================================================================= */
+
+let aiFiles = [];
+let aiScanMode = "meet"; // "meet" or "roster"
+let matchedStudents = [];
+let reviewStudents = [];
+let rosterExtracted = [];
+
+function triggerHeroUpload() {
+  const fileInput = document.getElementById("heroPhotoInput");
+  if (fileInput) {
+    fileInput.value = "";
+    fileInput.click();
+  } else {
+    openAIScanner("meet");
+  }
+}
+
+async function handleHeroPhotoUpload(files) {
+  if (!files || !files.length) return;
+  openAIScanner("meet");
+  aiFilesSelected(files);
+  // Auto-run AI Vision Scan after opening modal with chosen photos
+  setTimeout(() => {
+    runAIVisionScan();
+  }, 180);
+}
+
+function openAIScanner(mode = "meet") {
+  aiFiles = [];
+  aiScanMode = mode;
+  matchedStudents = [];
+  reviewStudents = [];
+  rosterExtracted = [];
+
+  const title = mode === "meet" ? "🤖 AI Google Meet Attendance Scanner" : "📋 AI Student List Scanner";
+  const desc = mode === "meet"
+    ? "Upload one or multiple Google Meet participant screenshots. AI Vision will detect visible participant names, rolls, and IDs. The application will strictly match them with 100% exact equality against your student database."
+    : "Upload photo(s) of a student roster or attendance sheet. AI Vision will extract names, rolls, and student IDs for review and addition to your database.";
+
+  document.getElementById("modalBox").innerHTML = `
+    <h2>${title}</h2>
+    <p class="muted">${desc}</p>
+    
+    <div class="notice-box">
+      🔒 <b>100% Exact Matching Mandate</b>: Only students whose normalized name, roll, or ID matches 100% identically with zero ambiguity will qualify for Matched (Present). Any variation or conflict is sent to Review.
+    </div>
+
+    <label class="aiDrop" id="aiDrop" for="aiInput">
+      <div class="aiDropIcon">📷</div>
+      <b>Tap to select screenshot(s) or photo(s)</b>
+      <div class="muted">JPG, PNG, WEBP • Select multiple images if participants span several screenshots</div>
+      <input id="aiInput" type="file" accept="image/*" multiple style="display:none" onchange="aiFilesSelected(this.files)">
+    </label>
+
+    <div id="aiFileList" class="aiFileList">No images selected.</div>
+
+    <div class="row">
+      <button class="btn primary" id="aiScanBtn" onclick="runAIVisionScan()">🔍 Run AI Vision Scan</button>
+      <button class="btn" onclick="closeModal()">Cancel</button>
+    </div>
+
+    <div class="aiProgress"><div id="aiProgressBar"></div></div>
+    <div id="aiStatus" class="aiStatus"></div>
+
+    <div id="aiReviewContainer" style="display:none"></div>
+  `;
+  document.getElementById("modal").classList.add("show");
+
+  const drop = document.getElementById("aiDrop");
+  ["dragenter", "dragover"].forEach(ev => drop.addEventListener(ev, e => {
+    e.preventDefault();
+    drop.classList.add("drag");
+  }));
+  ["dragleave", "drop"].forEach(ev => drop.addEventListener(ev, e => {
+    e.preventDefault();
+    drop.classList.remove("drag");
+  }));
+  drop.addEventListener("drop", e => {
+    e.preventDefault();
+    drop.classList.remove("drag");
+    if (e.dataTransfer.files) aiFilesSelected(e.dataTransfer.files);
+  });
+}
+
+function aiFilesSelected(files) {
+  aiFiles = [...files].filter(f => f.type.startsWith("image/"));
+  const el = document.getElementById("aiFileList");
+  if (!el) return;
+  if (!aiFiles.length) {
+    el.innerHTML = "No images selected.";
+  } else {
+    el.innerHTML = `<b>${aiFiles.length} image(s) ready:</b><br>` +
+      aiFiles.map((f, i) => `${i + 1}. ${esc(f.name)} (${Math.round(f.size / 1024)} KB)`).join("<br>");
+  }
+  document.getElementById("aiReviewContainer").style.display = "none";
+  document.getElementById("aiProgressBar").style.width = "0%";
+  document.getElementById("aiStatus").textContent = "";
+}
+
+// Convert File to Base64
+function fileToBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const base64 = reader.result.split(",")[1];
+      resolve(base64);
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+// 100% Exact Normalization Helper
+// Allowed normalization:
+// - trim leading/trailing spaces
+// - convert uppercase/lowercase consistently
+// - collapse multiple spaces
+// Do not silently alter spelling!
+function normalizeStrict(str) {
+  if (!str) return "";
+  return String(str)
+    .trim()
+    .toUpperCase()
+    .replace(/\s+/g, " ");
+}
+
+// Name comparison without punctuation dots in titles (e.g. MD. vs MD)
+function normalizeNameForCompare(str) {
+  if (!str) return "";
+  return String(str)
+    .toUpperCase()
+    .replace(/\./g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+async function runAIVisionScan() {
+  if (!aiFiles.length) {
+    alert("Please select at least one image to scan.");
+    return;
+  }
+
+  const btn = document.getElementById("aiScanBtn");
+  const status = document.getElementById("aiStatus");
+  const bar = document.getElementById("aiProgressBar");
+  btn.disabled = true;
+  bar.style.width = "10%";
+  status.textContent = "Preparing images for AI Vision analysis...";
+
+  try {
+    // 1. Process all images and extract participants
+    let allExtractedParticipants = [];
+
+    for (let i = 0; i < aiFiles.length; i++) {
+      status.textContent = `Analyzing image ${i + 1} of ${aiFiles.length} with AI Vision...`;
+      bar.style.width = Math.round(15 + (i / aiFiles.length) * 55) + "%";
+
+      const file = aiFiles[i];
+      const base64Data = await fileToBase64(file);
+      const mimeType = file.type || "image/jpeg";
+
+      const extracted = await callGeminiVision(base64Data, mimeType, aiScanMode);
+      if (Array.isArray(extracted)) {
+        allExtractedParticipants.push(...extracted);
+      }
+    }
+
+    bar.style.width = "75%";
+    status.textContent = "Deduplicating detected participants across screenshots...";
+
+    // 2. Remove duplicate participants extracted across screenshots
+    const deduplicated = deduplicateExtracted(allExtractedParticipants);
+
+    bar.style.width = "85%";
+    status.textContent = "Running 100% exact matching engine...";
+
+    if (aiScanMode === "meet") {
+      // 3. Match Google Meet participants against saved students
+      const matchResult = execute100PercentExactMatch(deduplicated);
+      matchedStudents = matchResult.matched;
+      reviewStudents = matchResult.review;
+
+      bar.style.width = "100%";
+      status.textContent = `Scan complete: ${matchedStudents.length} exact match(es), ${reviewStudents.length} review item(s).`;
+      renderMeetReviewUI();
+    } else {
+      // 4. Student Roster mode
+      rosterExtracted = deduplicated.map(p => ({
+        name: (p.name || "").trim(),
+        roll: p.roll ? Number(p.roll) : null,
+        studentId: (p.student_id || "").trim(),
+        selected: true
+      }));
+      bar.style.width = "100%";
+      status.textContent = `Extracted ${rosterExtracted.length} student record(s) from roster image.`;
+      renderRosterReviewUI();
+    }
+
+  } catch (err) {
+    console.error("AI Vision scan error:", err);
+    status.textContent = "❌ Scan failed: " + (err.message || "Unknown error");
+    alert("AI Vision scanning encountered an error:\n" + (err.message || "Please check your internet connection or API key."));
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+// Call Gemini Vision API (via native Android bridge if available, or direct REST call)
+async function callGeminiVision(base64Image, mimeType, mode) {
+  // If running in Android with AndroidBridge
+  if (window.AndroidBridge && typeof window.AndroidBridge.callGeminiVision === "function") {
+    try {
+      const responseStr = await window.AndroidBridge.callGeminiVision(base64Image, mimeType, mode);
+      return parseGeminiJsonResponse(responseStr);
+    } catch (e) {
+      console.warn("AndroidBridge vision call failed, trying direct REST fetch:", e);
+    }
+  }
+
+  // Direct REST API Call
+  // Priority: User custom key -> window.GEMINI_API_KEY injected -> Prompt if missing
+  let apiKey = customApiKey || (window.GEMINI_API_KEY && window.GEMINI_API_KEY !== "MY_GEMINI_API_KEY" ? window.GEMINI_API_KEY : "");
+  if (!apiKey) {
+    apiKey = prompt("Please enter your Gemini API Key to enable AI Vision attendance scanning:\n(You can get a free key from Google AI Studio)");
+    if (!apiKey) {
+      throw new Error("A Gemini API Key is required for AI Vision scanning.");
+    }
+    customApiKey = apiKey.trim();
+    localStorage.setItem("at_gemini_api_key", customApiKey);
+  }
+
+  const promptText = mode === "meet"
+    ? `You are an expert OCR & AI Vision assistant for Google Meet attendance.
+Analyze this Google Meet participant screenshot carefully.
+Extract every visible student/participant.
+Extract their full Name, Roll number (if present), and Student ID (if present).
+IGNORE all Google Meet UI controls, timestamps, chat icons, mic/video toggles, "You", "Meeting details", "Host", "pin", "Search for people", or status labels.
+
+Return ONLY a valid JSON object strictly matching this schema:
+{
+  "participants": [
+    {
+      "name": "Full Name as visible",
+      "roll": "Roll number or empty string if not visible",
+      "student_id": "Student ID or empty string if not visible"
+    }
+  ]
+}
+Do not include markdown code block markers or any explanations, output pure JSON.`
+    : `You are an expert OCR & AI Vision assistant for Student Rosters and Class Attendance Sheets.
+Extract all students listed in this document image.
+Extract each student's Roll number, Full Name, and Student ID.
+
+Return ONLY a valid JSON object strictly matching this schema:
+{
+  "participants": [
+    {
+      "name": "Full Name",
+      "roll": "Roll number or empty string",
+      "student_id": "Student ID or empty string"
+    }
+  ]
+}
+Do not include markdown code block markers, output pure JSON.`;
+
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${encodeURIComponent(apiKey)}`;
+
+  const payload = {
+    contents: [
+      {
+        parts: [
+          { text: promptText },
+          {
+            inlineData: {
+              mimeType: mimeType,
+              data: base64Image
+            }
+          }
+        ]
+      }
+    ],
+    generationConfig: {
+      temperature: 0.1,
+      responseMimeType: "application/json"
+    }
+  };
+
+  const response = await fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload)
+  });
+
+  if (!response.ok) {
+    const errBody = await response.text();
+    if (response.status === 400 || response.status === 403) {
+      throw new Error(`API Key invalid or quota exceeded (${response.status}). Please verify your Gemini API key.`);
+    }
+    throw new Error(`Gemini API error (${response.status}): ${errBody.substring(0, 120)}`);
+  }
+
+  const jsonResult = await response.json();
+  const textContent = jsonResult.candidates?.[0]?.content?.parts?.[0]?.text;
+  if (!textContent) {
+    throw new Error("No response returned by AI Vision.");
+  }
+
+  return parseGeminiJsonResponse(textContent);
+}
+
+function parseGeminiJsonResponse(rawText) {
+  try {
+    let clean = rawText.trim();
+    if (clean.startsWith("```json")) clean = clean.substring(7);
+    if (clean.startsWith("```")) clean = clean.substring(3);
+    if (clean.endsWith("```")) clean = clean.substring(0, clean.length - 3);
+    clean = clean.trim();
+
+    const parsed = JSON.parse(clean);
+    if (parsed && Array.isArray(parsed.participants)) {
+      return parsed.participants;
+    }
+    if (Array.isArray(parsed)) {
+      return parsed;
+    }
+    return [];
+  } catch (e) {
+    console.error("Failed to parse JSON from AI response:", rawText);
+    throw new Error("AI returned invalid JSON format.");
+  }
+}
+
+// Deduplicate participant entries across multiple images
+function deduplicateExtracted(list) {
+  const seen = new Set();
+  const result = [];
+
+  for (const item of list) {
+    const rawName = (item.name || "").trim();
+    const rawRoll = (item.roll || "").trim();
+    const rawId = (item.student_id || "").trim();
+
+    if (!rawName && !rawRoll && !rawId) continue;
+
+    // Composite key for deduplication
+    const key = `${normalizeStrict(rawName)}|${rawRoll}|${rawId}`;
+    if (seen.has(key)) continue;
+    seen.add(key);
+
+    result.push({
+      name: rawName,
+      roll: rawRoll,
+      student_id: rawId
+    });
+  }
+
+  return result;
+}
+
+/* =========================================================================
+   100% EXACT MATCHING ENGINE
+   Strictly adheres to:
+   - Trim leading/trailing spaces
+   - Convert uppercase/lowercase consistently
+   - Collapse multiple spaces
+   - Zero fuzzy matching (99% is rejected to Review)
+   - Disallow conflicting roll/name
+   ========================================================================= */
+function execute100PercentExactMatch(extractedList) {
+  const matched = [];
+  const review = [];
+  const claimedStudentSerials = new Set();
+
+  for (const item of extractedList) {
+    const detectedName = (item.name || "").trim();
+    const detectedRoll = item.roll ? Number(String(item.roll).replace(/\D/g, "")) : null;
+    const detectedId = (item.student_id || "").trim();
+
+    const normDetName = normalizeNameForCompare(detectedName);
+    const normDetId = normalizeStrict(detectedId);
+
+    // Find candidate matches in database
+    let nameMatches = [];
+    if (normDetName) {
+      nameMatches = students.filter(s => normalizeNameForCompare(s.name) === normDetName);
+    }
+
+    let rollMatches = [];
+    if (detectedRoll && !isNaN(detectedRoll)) {
+      rollMatches = students.filter(s => s.serial === detectedRoll);
+    }
+
+    let idMatches = [];
+    if (normDetId) {
+      idMatches = students.filter(s => normalizeStrict(s.studentId) === normDetId);
+    }
+
+    // Evaluate Exact Match Possibility
+    let exactCandidate = null;
+    let matchType = "";
+
+    // Case 1: All 3 match identically to same student
+    if (nameMatches.length === 1 && rollMatches.length === 1 && idMatches.length === 1) {
+      if (nameMatches[0].serial === rollMatches[0].serial && rollMatches[0].serial === idMatches[0].serial) {
+        exactCandidate = nameMatches[0];
+        matchType = "Name + Roll + ID (100% Exact)";
+      } else {
+        // Conflicting roll/name/ID!
+        review.push({
+          detected: item,
+          reason: "Conflicting roll/name/ID in database",
+          candidate: nameMatches[0] || rollMatches[0]
+        });
+        continue;
+      }
+    }
+    // Case 2: Name and Roll both match identically to same student
+    else if (nameMatches.length === 1 && rollMatches.length === 1) {
+      if (nameMatches[0].serial === rollMatches[0].serial) {
+        exactCandidate = nameMatches[0];
+        matchType = "Name + Roll (100% Exact)";
+      } else {
+        review.push({
+          detected: item,
+          reason: `Conflict: Name matches Roll ${nameMatches[0].serial} but Roll was detected as ${detectedRoll}`,
+          candidate: nameMatches[0]
+        });
+        continue;
+      }
+    }
+    // Case 3: 100% Exact Name match with no roll/ID conflict
+    else if (nameMatches.length === 1 && rollMatches.length === 0 && idMatches.length === 0) {
+      exactCandidate = nameMatches[0];
+      matchType = "Name (100% Exact)";
+    }
+    // Case 4: 100% Exact ID match with no conflicting name
+    else if (idMatches.length === 1 && !normDetName) {
+      exactCandidate = idMatches[0];
+      matchType = "Student ID (100% Exact)";
+    }
+    // Case 5: 100% Exact Roll match when name is not detected
+    else if (rollMatches.length === 1 && !normDetName) {
+      exactCandidate = rollMatches[0];
+      matchType = "Roll Number (100% Exact)";
+    }
+
+    if (exactCandidate) {
+      if (!claimedStudentSerials.has(exactCandidate.serial)) {
+        claimedStudentSerials.add(exactCandidate.serial);
+        matched.push({
+          student: exactCandidate,
+          detected: item,
+          reason: matchType,
+          selected: true
+        });
+      }
+    } else {
+      // Find closest suggested student for review only (DO NOT AUTOMATICALLY MARK PRESENT)
+      const possibleSuggestion = findClosestSuggestion(detectedName, detectedRoll);
+      let reason = "Student not found in database";
+      if (nameMatches.length > 1) reason = "Ambiguous: Multiple students with same name";
+      else if (detectedName && !possibleSuggestion) reason = "Unrecognized name / No match";
+      else if (detectedName && possibleSuggestion) reason = `Name mismatch (${detectedName} ≠ ${possibleSuggestion.name})`;
+      else if (!detectedName && !detectedRoll && !detectedId) reason = "Incomplete / unreadable participant tile";
+
+      review.push({
+        detected: item,
+        reason: reason,
+        candidate: possibleSuggestion,
+        selected: false
+      });
+    }
+  }
+
+  return { matched, review };
+}
+
+// Find closest suggestion purely to assist the user during manual review
+function findClosestSuggestion(name, roll) {
+  if (roll && students.some(s => s.serial === roll)) {
+    return students.find(s => s.serial === roll);
+  }
+  if (!name) return null;
+  const rawTokens = normalizeStrict(name).split(" ").filter(x => x.length > 1);
+  let best = null;
+  let maxHits = 0;
+  for (const s of students) {
+    const sTokens = normalizeStrict(s.name).split(" ").filter(x => x.length > 1);
+    const hits = sTokens.filter(t => rawTokens.includes(t)).length;
+    if (hits > maxHits && hits >= 1) {
+      maxHits = hits;
+      best = s;
+    }
+  }
+  return best;
+}
+
+// Render Review Screen for Google Meet Attendance
+function renderMeetReviewUI() {
+  const container = document.getElementById("aiReviewContainer");
+  if (!container) return;
+
+  container.innerHTML = `
+    <!-- 100% Exact Matched Section -->
+    <div class="review-section">
+      <div class="section-header exact">
+        <div class="section-title exact">
+          <span>✅</span> MATCHED — 100% EXACT
+        </div>
+        <span class="section-count">${matchedStudents.length} Eligible</span>
+      </div>
+      
+      ${matchedStudents.length ? `
+        <div class="row" style="margin-bottom:8px">
+          <button class="btn" style="padding:6px 10px;font-size:11.5px" onclick="setMatchedSelection(true)">Select All Matched</button>
+          <button class="btn" style="padding:6px 10px;font-size:11.5px" onclick="setMatchedSelection(false)">Unselect All</button>
+        </div>
+        <div>
+          ${matchedStudents.map((m, idx) => `
+            <label class="aiRow matched">
+              <input type="checkbox" ${m.selected ? "checked" : ""} onchange="matchedStudents[${idx}].selected=this.checked">
+              <div class="aiMain">
+                <b>${String(m.student.serial).padStart(2, "0")} — ${esc(m.student.name)}</b>
+                <div class="aiMeta">
+                  ID: ${esc(m.student.studentId)} • Detected: "${esc(m.detected.name || m.detected.roll || m.detected.student_id)}"
+                </div>
+              </div>
+              <span class="aiBadge good">100% EXACT</span>
+            </label>
+          `).join("")}
+        </div>
+      ` : '<div class="empty" style="padding:20px">No 100% exact matches found.</div>'}
+    </div>
+
+    <!-- Review Required / Unmatched Section -->
+    <div class="review-section" style="margin-top:20px">
+      <div class="section-header review">
+        <div class="section-title review">
+          <span>⚠️</span> UNMATCHED / REVIEW REQUIRED
+        </div>
+        <span class="section-count">${reviewStudents.length} Review Items</span>
+      </div>
+
+      ${reviewStudents.length ? `
+        <p class="muted" style="margin-bottom:8px">
+          These detected participants could not be verified with 100% exact certainty. Review and manually select if applicable:
+        </p>
+        <div>
+          ${reviewStudents.map((r, idx) => `
+            <div class="aiRow unmatched">
+              <input type="checkbox" ${r.selected ? "checked" : ""} onchange="reviewStudents[${idx}].selected=this.checked">
+              <div class="aiMain">
+                <b>Detected: "${esc(r.detected.name || "Unknown")}" ${r.detected.roll ? `(Roll: ${esc(r.detected.roll)})` : ""}</b>
+                <div class="aiMeta">
+                  <b>Reason:</b> ${esc(r.reason)}<br>
+                  ${r.candidate ? `<b>Possible student:</b> ${String(r.candidate.serial).padStart(2, "0")} — ${esc(r.candidate.name)}` : `<b>Database match:</b> None`}
+                </div>
+              </div>
+              <span class="aiBadge warn">Review</span>
+            </div>
+          `).join("")}
+        </div>
+      ` : '<p class="muted" style="font-size:12px;padding:8px 0">All participants were matched with 100% precision. Zero review items.</p>'}
+    </div>
+
+    <!-- Final Actions -->
+    <div class="row" style="margin-top:20px;padding-top:10px;border-top:1px solid var(--bd)">
+      <button class="btn primary" onclick="applyAttendanceConfirmed()" style="padding:13px 14px;font-size:14px">
+        ✅ Apply Attendance
+      </button>
+      <button class="btn" onclick="openAIScanner('meet')">🔄 Scan Again</button>
+      <button class="btn" onclick="closeModal()">Cancel</button>
+    </div>
+  `;
+
+  container.style.display = "block";
+}
+
+function setMatchedSelection(val) {
+  matchedStudents.forEach(m => m.selected = val);
+  renderMeetReviewUI();
+}
+
+// When user confirms attendance application
+function applyAttendanceConfirmed() {
+  const selectedMatched = matchedStudents.filter(m => m.selected);
+  const selectedReviewed = reviewStudents.filter(r => r.selected && r.candidate);
+
+  const totalToAdd = selectedMatched.length + selectedReviewed.length;
+  if (totalToAdd === 0) {
+    alert("No students selected to mark Present.");
+    return;
+  }
+
+  // Add confirmed matched students to current attendance
+  selectedMatched.forEach(m => present.add(m.student.serial));
+  selectedReviewed.forEach(r => present.add(r.candidate.serial));
+
+  // Save to existing LocalStorage structure
+  save();
+  render();
+  closeModal();
+
+  alert(`Attendance updated successfully!\n${totalToAdd} student(s) marked Present for ${fmt(currentDate)}.`);
+}
+
+// Render Review for Student Roster Scanner Mode
+function renderRosterReviewUI() {
+  const container = document.getElementById("aiReviewContainer");
+  if (!container) return;
+
+  container.innerHTML = `
+    <div class="review-section">
+      <div class="section-header exact">
+        <div class="section-title exact">
+          <span>📋</span> EXTRACTED STUDENTS FOR CONFIRMATION
+        </div>
+        <span class="section-count">${rosterExtracted.length} Extracted</span>
+      </div>
+
+      <p class="muted" style="margin-bottom:8px">
+        Review the extracted students before adding them to your database. Existing student records will not be overwritten automatically.
+      </p>
+
+      <div style="max-height:40vh;overflow-y:auto">
+        ${rosterExtracted.map((s, i) => `
+          <label class="aiRow">
+            <input type="checkbox" ${s.selected ? "checked" : ""} onchange="rosterExtracted[${i}].selected=this.checked">
+            <div class="aiMain">
+              <b>Roll ${s.roll || "?"}: ${esc(s.name)}</b>
+              <div class="aiMeta">ID: ${esc(s.studentId || "N/A")}</div>
+            </div>
+          </label>
+        `).join("")}
+      </div>
+
+      <div class="row" style="margin-top:16px">
+        <button class="btn primary" onclick="addConfirmedStudentsToDatabase()">➕ Add Confirmed Students</button>
+        <button class="btn" onclick="openAIScanner('roster')">🔄 Scan Again</button>
+        <button class="btn" onclick="closeModal()">Cancel</button>
+      </div>
+    </div>
+  `;
+  container.style.display = "block";
+}
+
+function addConfirmedStudentsToDatabase() {
+  const toAdd = rosterExtracted.filter(s => s.selected && s.name);
+  if (!toAdd.length) {
+    alert("No students selected to add.");
+    return;
+  }
+
+  let addedCount = 0;
+  for (const s of toAdd) {
+    const roll = s.roll || (students.length ? Math.max(...students.map(x => x.serial)) + 1 : 1);
+    const existing = students.find(x => x.serial === roll || (s.studentId && x.studentId === s.studentId));
+    if (!existing) {
+      students.push({
+        serial: roll,
+        name: s.name,
+        studentId: s.studentId || `ID-${roll}`,
+        joinedDate: todayKey()
+      });
+      addedCount++;
+    }
+  }
+
+  save();
+  render();
+  closeModal();
+  alert(`Added ${addedCount} new student(s) to the database.`);
+}
+
+// Initial render
+render();
+</script>
+</body>
+</html>

@@ -1,0 +1,6 @@
+{
+  "name": "Attendance Tracker Pro",
+  "description": "Smart Google Meet screenshot & participant AI vision attendance tracker with 100% exact student matching, review workflows, history, and WhatsApp reporting.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
