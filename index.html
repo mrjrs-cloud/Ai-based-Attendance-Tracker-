@@ -1,0 +1,1828 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Attendance Tracker Pro</title>
+<style>
+:root {
+  --p: #0071e3;
+  --p-glow: rgba(0, 113, 227, 0.28);
+  --ok: #34c759;
+  --ok-glow: rgba(52, 199, 89, 0.32);
+  --ok-bg: rgba(52, 199, 89, 0.12);
+  --ok-bd: rgba(52, 199, 89, 0.36);
+  --warn: #ff9500;
+  --warn-glow: rgba(255, 149, 0, 0.28);
+  --warn-bg: rgba(255, 149, 0, 0.12);
+  --warn-bd: rgba(255, 149, 0, 0.36);
+  --danger: #ff3b30;
+  --danger-glow: rgba(255, 59, 48, 0.25);
+  
+  --bg-gradient: radial-gradient(1200px 800px at 10% -10%, #e0edff 0%, #edf3fc 45%, #f4f7fb 100%);
+  --txt: #1c1c1e;
+  --muted: #636366;
+  --glass-bg: rgba(255, 255, 255, 0.72);
+  --glass-bd: rgba(255, 255, 255, 0.75);
+  --glass-shadow: 0 10px 30px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.03);
+  --card-bg: rgba(255, 255, 255, 0.78);
+  --card-bd: rgba(255, 255, 255, 0.9);
+  --pill-bg: rgba(255, 255, 255, 0.85);
+  --dock-bg: rgba(255, 255, 255, 0.82);
+  --dock-bd: rgba(255, 255, 255, 0.95);
+  --dock-shadow: 0 20px 48px rgba(0, 0, 0, 0.16), 0 2px 8px rgba(0, 0, 0, 0.06);
+  --switch-track: rgba(120, 120, 128, 0.22);
+}
+
+body.dark {
+  --p: #2997ff;
+  --p-glow: rgba(41, 151, 255, 0.35);
+  --ok: #30d158;
+  --ok-glow: rgba(48, 209, 88, 0.35);
+  --ok-bg: rgba(48, 209, 88, 0.14);
+  --ok-bd: rgba(48, 209, 88, 0.4);
+  --warn: #ff9f0a;
+  --warn-glow: rgba(255, 159, 10, 0.35);
+  --warn-bg: rgba(255, 159, 10, 0.14);
+  --warn-bd: rgba(255, 159, 10, 0.4);
+  --danger: #ff453a;
+  --danger-glow: rgba(255, 69, 58, 0.3);
+  
+  --bg-gradient: radial-gradient(1000px 700px at 0% -10%, rgba(41, 151, 255, 0.14) 0%, transparent 60%),
+                 radial-gradient(800px 600px at 100% 0%, rgba(162, 89, 255, 0.12) 0%, transparent 55%),
+                 linear-gradient(160deg, #090c10 0%, #121824 50%, #0d1117 100%);
+  --txt: #f5f5f7;
+  --muted: #98989d;
+  --glass-bg: rgba(26, 34, 48, 0.65);
+  --glass-bd: rgba(255, 255, 255, 0.12);
+  --glass-shadow: 0 14px 40px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  --card-bg: rgba(28, 36, 50, 0.68);
+  --card-bd: rgba(255, 255, 255, 0.1);
+  --pill-bg: rgba(255, 255, 255, 0.08);
+  --dock-bg: rgba(18, 24, 35, 0.78);
+  --dock-bd: rgba(255, 255, 255, 0.14);
+  --dock-shadow: 0 24px 60px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  --switch-track: rgba(255, 255, 255, 0.14);
+}
+
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body {
+  margin: 0; padding: 0;
+  min-height: 100vh;
+  background: var(--bg-gradient);
+  background-attachment: fixed;
+  color: var(--txt);
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", Roboto, sans-serif;
+  letter-spacing: -0.015em;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+/* Floating Liquid Glass Header */
+.header-wrapper {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  padding: 10px 14px 6px;
+}
+header.liquid-header {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 10px 16px;
+  background: var(--glass-bg);
+  backdrop-filter: blur(36px) saturate(190%);
+  -webkit-backdrop-filter: blur(36px) saturate(190%);
+  border: 1px solid var(--glass-bd);
+  border-radius: 9999px;
+  box-shadow: var(--glass-shadow);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  transition: all 0.25s ease;
+}
+.header-title-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.app-logo-orb {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #0071e3, #43a047);
+  display: grid;
+  place-items: center;
+  box-shadow: 0 4px 12px rgba(0, 113, 227, 0.35), inset 0 1px 1px rgba(255,255,255,0.7);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 800;
+}
+h1 {
+  font-size: 17px;
+  font-weight: 700;
+  margin: 0;
+  letter-spacing: -0.02em;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Liquid Pill Buttons */
+.btn {
+  border: 1px solid var(--glass-bd);
+  border-radius: 9999px;
+  padding: 8px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  background: var(--pill-bg);
+  color: var(--txt);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.04), inset 0 1px 0 rgba(255,255,255,0.3);
+  transition: all 0.18s cubic-bezier(0.2, 0.8, 0.2, 1);
+  white-space: nowrap;
+}
+.btn:active {
+  transform: scale(0.95);
+  filter: brightness(0.92);
+}
+.btn.primary {
+  background: linear-gradient(135deg, #0071e3 0%, #005bb5 100%);
+  color: #fff;
+  border-color: rgba(255,255,255,0.25);
+  box-shadow: 0 6px 18px var(--p-glow), inset 0 1px 1px rgba(255,255,255,0.4);
+}
+.btn.success {
+  background: linear-gradient(135deg, #34c759 0%, #28a745 100%);
+  color: #fff;
+  border-color: rgba(255,255,255,0.3);
+  box-shadow: 0 6px 18px var(--ok-glow), inset 0 1px 1px rgba(255,255,255,0.4);
+}
+.btn.danger {
+  background: rgba(255, 59, 48, 0.12);
+  color: var(--danger);
+  border-color: rgba(255, 59, 48, 0.25);
+}
+.btn.danger:active {
+  background: var(--danger);
+  color: #fff;
+}
+.btn.theme-toggle-btn {
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border-radius: 50%;
+  font-size: 16px;
+}
+
+/* Container */
+.container {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 10px 14px 120px;
+}
+
+/* Hero Stats Card */
+.stats-hero-card {
+  position: relative;
+  overflow: hidden;
+  background: var(--card-bg);
+  backdrop-filter: blur(32px) saturate(180%);
+  -webkit-backdrop-filter: blur(32px) saturate(180%);
+  border: 1px solid var(--card-bd);
+  border-radius: 24px;
+  padding: 16px 18px;
+  box-shadow: var(--glass-shadow);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 12px;
+  transition: all 0.3s ease;
+}
+.stats-hero-card::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent);
+}
+.ring-container {
+  position: relative;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: conic-gradient(var(--ok) var(--pct, 0%), rgba(120, 120, 128, 0.18) 0%);
+  box-shadow: 0 4px 14px var(--ok-glow), inset 0 1px 1px rgba(255,255,255,0.4);
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+}
+.ring-container::after {
+  content: "";
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: var(--card-bg);
+  backdrop-filter: blur(20px);
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.06);
+}
+.ring-pct-text {
+  position: relative;
+  z-index: 2;
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+.stat-info {
+  flex: 1;
+  min-width: 0;
+}
+.stat-date-title {
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-bottom: 2px;
+}
+.stat-summary-text {
+  font-size: 13px;
+  color: var(--muted);
+  font-weight: 500;
+}
+
+/* Clean AI Attendance Tracker Card */
+.ai-dashboard-card {
+  position: relative;
+  overflow: hidden;
+  background: var(--card-bg);
+  backdrop-filter: blur(32px) saturate(180%);
+  -webkit-backdrop-filter: blur(32px) saturate(180%);
+  border: 1px solid var(--card-bd);
+  border-radius: 24px;
+  padding: 16px 18px;
+  box-shadow: var(--glass-shadow);
+  margin-bottom: 14px;
+  transition: all 0.3s ease;
+}
+.ai-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+.ai-card-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+.ai-upload-btn {
+  width: 100%;
+  padding: 12px 18px;
+  font-size: 14px;
+  font-weight: 700;
+  border-radius: 9999px;
+  background: linear-gradient(135deg, #0071e3 0%, #7928ca 100%);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 0 6px 20px rgba(0, 113, 227, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+}
+.ai-upload-btn:active {
+  transform: scale(0.98);
+  filter: brightness(0.94);
+}
+
+/* Tabs and Search */
+.tabs-scroll {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  scrollbar-width: none;
+}
+.tabs-scroll::-webkit-scrollbar { display: none; }
+.tab-pill {
+  border: 1px solid var(--glass-bd);
+  background: var(--card-bg);
+  backdrop-filter: blur(20px);
+  padding: 8px 15px;
+  border-radius: 9999px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+}
+.tab-pill.active {
+  background: var(--p);
+  color: #fff;
+  border-color: rgba(255,255,255,0.25);
+  box-shadow: 0 4px 14px var(--p-glow);
+}
+
+.search-box {
+  position: relative;
+  margin-bottom: 14px;
+}
+.search-box input {
+  width: 100%;
+  padding: 13px 18px 13px 44px;
+  border-radius: 18px;
+  background: var(--card-bg);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid var(--card-bd);
+  color: var(--txt);
+  font-size: 14px;
+  font-weight: 500;
+  outline: none;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.03), inset 0 1px 2px rgba(0,0,0,0.03);
+  transition: all 0.2s ease;
+}
+.search-box input:focus {
+  border-color: var(--p);
+  box-shadow: 0 0 0 4px var(--p-glow);
+}
+.search-icon-svg {
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 16px;
+  color: var(--muted);
+  pointer-events: none;
+}
+
+/* Squircle Glass Cards & Liquid Orb Badges */
+.students-list {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+.student-card {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 20px;
+  background: var(--card-bg);
+  backdrop-filter: blur(28px) saturate(180%);
+  -webkit-backdrop-filter: blur(28px) saturate(180%);
+  border: 1px solid var(--card-bd);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.04), inset 0 1px 0 rgba(255,255,255,0.4);
+  cursor: pointer;
+  user-select: none;
+  transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1),
+              box-shadow 0.25s ease,
+              border-color 0.25s ease,
+              background 0.25s ease;
+}
+.student-card:active {
+  transform: scale(0.985);
+}
+.student-card.present {
+  background: var(--ok-bg);
+  border-color: var(--ok-bd);
+  box-shadow: 0 8px 24px var(--ok-glow), inset 0 1px 1px rgba(255,255,255,0.4);
+}
+
+/* Liquid Orb Badge for Roll */
+.roll-orb {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-weight: 800;
+  font-size: 14px;
+  background: radial-gradient(circle at 35% 30%, rgba(255,255,255,0.95), rgba(220,230,245,0.7));
+  color: #1c1c1e;
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08), inset 0 1px 2px #fff;
+  flex-shrink: 0;
+  transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+body.dark .roll-orb {
+  background: radial-gradient(circle at 35% 30%, rgba(255,255,255,0.22), rgba(255,255,255,0.08));
+  color: #fff;
+  border-color: rgba(255,255,255,0.18);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3), inset 0 1px 1px rgba(255,255,255,0.2);
+}
+.student-card.present .roll-orb {
+  background: radial-gradient(circle at 35% 30%, #4cd964, #34c759);
+  color: #fff;
+  border-color: rgba(255,255,255,0.6);
+  box-shadow: 0 6px 16px var(--ok-glow), inset 0 1px 2px rgba(255,255,255,0.6);
+}
+
+.student-info-col {
+  flex: 1;
+  min-width: 0;
+}
+.student-name-text {
+  font-size: 14.5px;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: text-shadow 0.2s ease;
+}
+.student-id-text {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 2px;
+  font-weight: 500;
+}
+.student-pct-pill {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--muted);
+  background: rgba(120, 120, 128, 0.09);
+  padding: 4px 8px;
+  border-radius: 9999px;
+  flex-shrink: 0;
+}
+.student-card.present .student-pct-pill {
+  background: rgba(52, 199, 89, 0.18);
+  color: var(--ok);
+}
+
+/* Liquid Bubble Switches */
+.liquid-switch {
+  position: relative;
+  width: 50px;
+  height: 30px;
+  border-radius: 9999px;
+  background: var(--switch-track);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  padding: 3px;
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.15), inset 0 -1px 2px rgba(255,255,255,0.15), 0 1px 2px rgba(0,0,0,0.05);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.28s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.28s ease;
+}
+.liquid-switch .switch-thumb {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: linear-gradient(180deg, #ffffff 0%, #e6ebf5 100%);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2), inset 0 1px 1px #ffffff;
+  transition: transform 0.3s cubic-bezier(0.34, 1.45, 0.7, 1);
+}
+.liquid-switch.on {
+  background: linear-gradient(135deg, #34c759 0%, #28a745 100%);
+  box-shadow: 0 4px 14px var(--ok-glow), inset 0 1px 2px rgba(255,255,255,0.4);
+}
+.liquid-switch.on .switch-thumb {
+  transform: translateX(20px);
+  background: #ffffff;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.25), inset 0 1px 1px #ffffff;
+}
+
+/* Tap pop animations */
+@keyframes liquidPop {
+  0% { transform: scale(0.97); }
+  50% { transform: scale(1.02); }
+  100% { transform: scale(1); }
+}
+@keyframes nameGlow {
+  0% { text-shadow: 0 0 0 transparent; }
+  40% { text-shadow: 0 0 14px var(--p-glow); }
+  100% { text-shadow: 0 0 0 transparent; }
+}
+.student-card.tapped {
+  animation: liquidPop 0.32s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.student-card.tapped .student-name-text {
+  animation: nameGlow 0.45s ease;
+}
+
+/* Floating Liquid Glass Dock */
+.dock-wrapper {
+  position: fixed;
+  bottom: 14px;
+  left: 0;
+  right: 0;
+  z-index: 40;
+  display: flex;
+  justify-content: center;
+  padding: 0 14px;
+  pointer-events: none;
+}
+.liquid-dock {
+  pointer-events: auto;
+  width: 100%;
+  max-width: 560px;
+  background: var(--dock-bg);
+  backdrop-filter: blur(40px) saturate(220%);
+  -webkit-backdrop-filter: blur(40px) saturate(220%);
+  border: 1px solid var(--dock-bd);
+  border-radius: 9999px;
+  padding: 7px 10px;
+  box-shadow: var(--dock-shadow);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+}
+.liquid-dock .btn {
+  flex: 1;
+  padding: 11px 8px;
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+/* Modals */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.52);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 60;
+  padding: 16px;
+}
+.modal-overlay.show { display: flex; }
+.glass-box {
+  background: var(--card-bg);
+  backdrop-filter: blur(40px) saturate(190%);
+  -webkit-backdrop-filter: blur(40px) saturate(190%);
+  color: var(--txt);
+  width: min(560px, 100%);
+  max-height: 88vh;
+  overflow-y: auto;
+  border-radius: 26px;
+  border: 1px solid var(--card-bd);
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255,255,255,0.25);
+  padding: 20px;
+  animation: modalEnter 0.26s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+@keyframes modalEnter {
+  from { opacity: 0; transform: scale(0.92) translateY(10px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+.glass-box h2 {
+  margin: 0 0 12px;
+  font-size: 19px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+.glass-input {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1px solid var(--card-bd);
+  background: var(--pill-bg);
+  color: var(--txt);
+  font-size: 14px;
+  outline: none;
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.05);
+}
+.glass-input:focus {
+  border-color: var(--p);
+  box-shadow: 0 0 0 3px var(--p-glow);
+}
+.row-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+.row-actions > * { flex: 1; }
+
+.history-item-card {
+  border: 1px solid var(--card-bd);
+  border-radius: 16px;
+  padding: 12px 14px;
+  margin: 8px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--pill-bg);
+}
+
+/* AI Scanner Drop & Result Sections */
+.aiDrop {
+  border: 2px dashed var(--p);
+  border-radius: 20px;
+  padding: 22px 16px;
+  text-align: center;
+  background: rgba(0, 113, 227, 0.05);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-top: 10px;
+}
+.aiDrop:hover, .aiDrop.drag {
+  background: rgba(0, 113, 227, 0.12);
+  border-color: var(--ok);
+}
+.aiFileList {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 8px;
+  text-align: left;
+  max-height: 90px;
+  overflow-y: auto;
+}
+.aiProgress {
+  height: 8px;
+  background: rgba(120, 120, 128, 0.15);
+  border-radius: 9999px;
+  overflow: hidden;
+  margin: 12px 0;
+}
+.aiProgress > div {
+  height: 100%;
+  width: 0;
+  background: linear-gradient(90deg, #0071e3, #7928ca, #34c759);
+  transition: width 0.25s ease;
+}
+.aiStatus {
+  font-size: 12.5px;
+  color: var(--muted);
+  min-height: 18px;
+  font-weight: 600;
+}
+.aiResults {
+  margin-top: 14px;
+  max-height: 48vh;
+  overflow-y: auto;
+}
+
+.ai-section-title {
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  margin: 14px 0 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.ai-section-title.matched { color: var(--ok); }
+.ai-section-title.unmatched { color: var(--warn); }
+.ai-section-title.new { color: var(--p); }
+
+.aiRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid var(--card-bd);
+  border-radius: 16px;
+  padding: 10px 12px;
+  margin: 7px 0;
+  background: var(--pill-bg);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.aiRow:hover {
+  border-color: var(--glass-bd);
+}
+.aiRow.matched-row {
+  border-color: var(--ok-bd);
+  background: var(--ok-bg);
+}
+.aiRow.unmatched-row {
+  border-color: var(--warn-bd);
+  background: var(--warn-bg);
+}
+.aiRow input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  accent-color: var(--ok);
+  cursor: pointer;
+}
+.aiBadge {
+  font-size: 10.5px;
+  font-weight: 800;
+  border-radius: 9999px;
+  padding: 4px 9px;
+  background: var(--pill-bg);
+  color: var(--txt);
+  white-space: nowrap;
+}
+.aiBadge.exact { background: rgba(52, 199, 89, 0.22); color: var(--ok); border: 1px solid rgba(52, 199, 89, 0.35); }
+.aiBadge.review { background: rgba(255, 149, 0, 0.22); color: var(--warn); border: 1px solid rgba(255, 149, 0, 0.35); }
+.aiBadge.gray { background: rgba(120, 120, 128, 0.15); color: var(--muted); }
+
+.empty-state {
+  text-align: center;
+  padding: 48px 20px;
+  color: var(--muted);
+  font-weight: 500;
+}
+</style>
+</head>
+<body>
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@6/dist/tesseract.min.js"></script>
+
+<!-- Floating Liquid Glass Header -->
+<div class="header-wrapper">
+  <header class="liquid-header">
+    <div class="header-title-box">
+      <div class="app-logo-orb">✓</div>
+      <h1>Attendance Pro</h1>
+    </div>
+    <div class="header-actions">
+      <button class="btn" onclick="newDay()">＋ New Day</button>
+      <button class="btn" onclick="openHistory()">History</button>
+      <button class="btn theme-toggle-btn" id="themeToggleBtn" onclick="toggleDark()" title="Toggle Light/Dark Theme">🌙</button>
+    </div>
+  </header>
+</div>
+
+<div class="container">
+  <!-- Hero Card with Liquid Ring & Stats -->
+  <div class="stats-hero-card">
+    <div class="ring-container" id="ring">
+      <span class="ring-pct-text" id="pct">0%</span>
+    </div>
+    <div class="stat-info">
+      <div class="stat-date-title" id="dateTitle">Batch 28 | Section A</div>
+      <div class="stat-summary-text" id="summary">0 Present • 55 Absent • 55 Total</div>
+    </div>
+    <button class="btn" onclick="selectAll()">All</button>
+  </div>
+
+  <!-- Clean AI Attendance Tracker Card -->
+  <div class="ai-dashboard-card">
+    <div class="ai-card-header">
+      <div class="ai-card-title">
+        <span style="font-size:18px">🤖</span>
+        <span>Ai Attendance Tracker</span>
+      </div>
+      <button class="btn" style="padding:6px 10px;font-size:12px" onclick="openAISettings()" title="AI Settings">⚙️</button>
+    </div>
+    <button class="btn ai-upload-btn" onclick="openAIScanner()">
+      <span style="font-size:16px">☁️</span> Upload
+    </button>
+  </div>
+
+  <!-- Filter Tabs & Actions -->
+  <div class="tabs-scroll">
+    <button class="tab-pill active" id="tabAll" onclick="setFilter(false)">All Students</button>
+    <button class="tab-pill" id="tabPresent" onclick="setFilter(true)">Present Only</button>
+    <button class="btn primary" onclick="openManage()">✏️ Manage Students</button>
+  </div>
+
+  <!-- Search Box -->
+  <div class="search-box">
+    <span class="search-icon-svg">🔍</span>
+    <input id="search" placeholder="Search roll, name or student ID..." oninput="render()">
+  </div>
+
+  <!-- Student Cards List -->
+  <div id="list" class="students-list"></div>
+</div>
+
+<!-- Floating Liquid Glass Dock -->
+<div class="dock-wrapper">
+  <div class="liquid-dock">
+    <button class="btn danger" onclick="resetDay()">RESET</button>
+    <button class="btn" onclick="shareWhatsApp()">WHATSAPP</button>
+    <button class="btn primary" onclick="copyAttendance()">COPY ATTENDANCE</button>
+  </div>
+</div>
+
+<!-- Modal Container -->
+<div id="modal" class="modal-overlay" onclick="if(event.target===this)closeModal()">
+  <div class="glass-box" id="modalBox"></div>
+</div>
+
+<script>
+const defaultStudents = [
+  {"serial": 1, "name": "MD. LEON MIAH", "studentId": "2261461001"},
+  {"serial": 2, "name": "SHANTO KUMAR SARKER", "studentId": "2261461002"},
+  {"serial": 3, "name": "MD. ROKAN MIA", "studentId": "2261461003"},
+  {"serial": 4, "name": "MD. SHADIKIN RAHMAN", "studentId": "2261461004"},
+  {"serial": 5, "name": "MD. IMTIAZ AHMED SIAM", "studentId": "2261461005"},
+  {"serial": 6, "name": "MEHEDI HASAN PAPPU", "studentId": "2261461006"},
+  {"serial": 7, "name": "SAWROV CHANDRA DASH", "studentId": "2261461007"},
+  {"serial": 8, "name": "MD. MEZZAUL ZAMAN RAJU", "studentId": "2261461008"},
+  {"serial": 9, "name": "YEASHAM ZAMAN KHAN JOSAN", "studentId": "2261461009"},
+  {"serial": 10, "name": "OLIULLAH", "studentId": "2261461010"},
+  {"serial": 11, "name": "MD. LEON", "studentId": "2261461011"},
+  {"serial": 12, "name": "MD. RAJIB HOSSAIN", "studentId": "2261461012"},
+  {"serial": 13, "name": "MD. SHAKIL HASAN", "studentId": "2261461013"},
+  {"serial": 14, "name": "MST. SHIMA KHATUN", "studentId": "2261461014"},
+  {"serial": 15, "name": "MD. ASHIK SHARIAR", "studentId": "2261461015"},
+  {"serial": 16, "name": "MITHUN DEBNATH", "studentId": "2261461016"},
+  {"serial": 17, "name": "SOUVIK SARKAR", "studentId": "2261461017"},
+  {"serial": 18, "name": "MD. SABUZ HOSSAN", "studentId": "2261461018"},
+  {"serial": 19, "name": "MD. TAWFIQ HASAN", "studentId": "2261461019"},
+  {"serial": 20, "name": "DHANJAY KUMAR", "studentId": "2261461020"},
+  {"serial": 21, "name": "GOBINDA CHANDRA", "studentId": "2261461021"},
+  {"serial": 22, "name": "SUMON AHMED", "studentId": "2261461022"},
+  {"serial": 23, "name": "EMRUL KAYES BIPU", "studentId": "2261461023"},
+  {"serial": 24, "name": "ATIK AHAMMED RUMAN", "studentId": "2261461024"},
+  {"serial": 25, "name": "MD. AKRAM MIA", "studentId": "2261461025"},
+  {"serial": 26, "name": "MD. ARIF HOSSAIN", "studentId": "2261461026"},
+  {"serial": 27, "name": "SHEIAK RAKIB", "studentId": "2261461027"},
+  {"serial": 28, "name": "MD. JOYNAL ABADIN", "studentId": "2261461028"},
+  {"serial": 29, "name": "NUSRAT JAHAN FARIHA", "studentId": "2261461029"},
+  {"serial": 30, "name": "KAPILDEV HALDER", "studentId": "2261461030"},
+  {"serial": 31, "name": "MD. AHADUL ISLAM MAHIN", "studentId": "2261461031"},
+  {"serial": 32, "name": "MD. MAHIBE JAHIR", "studentId": "2261461032"},
+  {"serial": 33, "name": "MD. RATUL HASAN", "studentId": "2261461033"},
+  {"serial": 34, "name": "MST. KARIMA TABASSUM", "studentId": "2261461034"},
+  {"serial": 35, "name": "JANNATUL FARDOUS", "studentId": "2261461035"},
+  {"serial": 36, "name": "MD. IBRAHIM KHAN", "studentId": "2261461036"},
+  {"serial": 37, "name": "MOHAMMAD LIMON SHAKE", "studentId": "2261461037"},
+  {"serial": 38, "name": "SABBIR AHHAMAD SAYEF", "studentId": "2261461038"},
+  {"serial": 39, "name": "MEHEDI HASAN LIMON", "studentId": "2261461039"},
+  {"serial": 40, "name": "NAHID HASAN", "studentId": "2261461040"},
+  {"serial": 41, "name": "NAYEEM HASAN", "studentId": "2261461041"},
+  {"serial": 42, "name": "MD. GOLAM RUBAIT", "studentId": "2261461042"},
+  {"serial": 43, "name": "MD. AYAN SHAHRIAR", "studentId": "2261461043"},
+  {"serial": 44, "name": "SUSHANTO CHANDRAY ROY", "studentId": "2261461044"},
+  {"serial": 45, "name": "MD. ABDUL KUDDUS", "studentId": "2261461045"},
+  {"serial": 46, "name": "JOY HALDER", "studentId": "2261461046"},
+  {"serial": 47, "name": "MD. SHAKH SHAHZALAL", "studentId": "2261461047"},
+  {"serial": 48, "name": "MD. MAHABUB HASAN MIRAJ", "studentId": "2261461048"},
+  {"serial": 49, "name": "Sima Khatun", "studentId": "2261461049"},
+  {"serial": 50, "name": "ASHIKUR RAHMAN", "studentId": "2261461050"},
+  {"serial": 51, "name": "SOBUJ RANA", "studentId": "2261461051"},
+  {"serial": 52, "name": "MD. AL-AMIN", "studentId": "2261461052"},
+  {"serial": 53, "name": "MD. GOLAM ROBBANI", "studentId": "2261461053"},
+  {"serial": 54, "name": "MD. JUBAID HASSAN PARVEZ", "studentId": "2261461054"},
+  {"serial": 55, "name": "MD. JAHID HASAN", "studentId": "2261461055"}
+];
+
+let students = JSON.parse(localStorage.getItem("at_students") || "null") || defaultStudents;
+let records = JSON.parse(localStorage.getItem("at_records") || "{}");
+let savedDate = localStorage.getItem("at_date");
+let currentDate = todayKey();
+let present = new Set(records[currentDate] || []);
+if (savedDate !== currentDate) localStorage.setItem("at_date", currentDate);
+
+let presentOnly = false, editSerial = null, animateSerial = null, animateTimer = null;
+
+// AI Vision Configuration
+let aiProvider = localStorage.getItem("at_ai_provider") || "gemini"; // "gemini" | "openai" | "ocr"
+let geminiApiKey = localStorage.getItem("at_gemini_key") || "";
+let openaiApiKey = localStorage.getItem("at_openai_key") || "";
+
+function todayKey() {
+  return new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Dhaka" }).format(new Date());
+}
+
+function save() {
+  const now = todayKey();
+  if (currentDate !== now) {
+    currentDate = now;
+    present = new Set(records[currentDate] || []);
+  }
+  records[currentDate] = [...present];
+  localStorage.setItem("at_records", JSON.stringify(records));
+  localStorage.setItem("at_students", JSON.stringify(students));
+  localStorage.setItem("at_date", currentDate);
+}
+
+function fmt(k) {
+  let [y, m, d] = k.split("-");
+  return `${d}/${m}/${y}`;
+}
+
+function toggleDark() {
+  const isDark = document.body.classList.toggle("dark");
+  localStorage.setItem("at_dark", isDark);
+  updateThemeIcon();
+}
+
+function updateThemeIcon() {
+  const btn = document.getElementById("themeToggleBtn");
+  if (btn) {
+    btn.textContent = document.body.classList.contains("dark") ? "☀️" : "🌙";
+  }
+}
+
+if (localStorage.getItem("at_dark") === "true") {
+  document.body.classList.add("dark");
+}
+updateThemeIcon();
+
+function isP(s) {
+  return present.has(s.serial);
+}
+
+function render() {
+  let q = document.getElementById("search").value.toLowerCase().trim();
+  let arr = students.filter(s => (!presentOnly || isP(s)) && (s.name.toLowerCase().includes(q) || String(s.serial).includes(q) || s.studentId.includes(q)));
+  let total = students.length, count = present.size, pc = total ? Math.round((count / total) * 100) : 0;
+  
+  document.getElementById("dateTitle").textContent = `Batch 28 | Section A • ${fmt(currentDate)}`;
+  document.getElementById("summary").textContent = `${count} Present • ${total - count} Absent • ${total} Total`;
+  document.getElementById("pct").textContent = pc + "%";
+  document.getElementById("ring").style.setProperty("--pct", pc + "%");
+  
+  document.getElementById("tabAll").classList.toggle("active", !presentOnly);
+  document.getElementById("tabPresent").classList.toggle("active", presentOnly);
+
+  const listEl = document.getElementById("list");
+  listEl.innerHTML = arr.length ? arr.map(s => {
+    const isPresent = isP(s);
+    const isTapped = animateSerial === s.serial;
+    return `
+      <div class="student-card ${isPresent ? 'present' : ''} ${isTapped ? 'tapped' : ''}" onclick="toggle(${s.serial})">
+        <div class="roll-orb">${String(s.serial).padStart(2, "0")}</div>
+        <div class="student-info-col">
+          <div class="student-name-text">${esc(s.name)}</div>
+          <div class="student-id-text">ID: ${esc(s.studentId)}</div>
+        </div>
+        <div class="student-pct-pill">${studentPct(s.serial)}%</div>
+        <div class="liquid-switch ${isPresent ? 'on' : ''}" onclick="event.stopPropagation();toggle(${s.serial})">
+          <div class="switch-thumb"></div>
+        </div>
+      </div>
+    `;
+  }).join("") : '<div class="empty-state">No students found.</div>';
+}
+
+function esc(x) {
+  return String(x || "").replace(/[&<>"']/g, m => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[m]));
+}
+
+function toggle(n) {
+  isP({ serial: n }) ? present.delete(n) : present.add(n);
+  animateSerial = n;
+  if (animateTimer) clearTimeout(animateTimer);
+  save();
+  render();
+  animateTimer = setTimeout(() => {
+    animateSerial = null;
+    render();
+  }, 450);
+}
+
+function selectAll() {
+  if (present.size === students.length) present.clear();
+  else students.forEach(s => present.add(s.serial));
+  save();
+  render();
+}
+
+function resetDay() {
+  if (confirm("Reset this day's attendance?")) {
+    present.clear();
+    save();
+    render();
+  }
+}
+
+function setFilter(v) {
+  presentOnly = v;
+  render();
+}
+
+function newDay() {
+  if (confirm("Start a new attendance day? Current day is already saved.")) {
+    currentDate = todayKey();
+    present = new Set(records[currentDate] || []);
+    save();
+    render();
+  }
+}
+
+function studentPct(serial) {
+  let student = students.find(s => s.serial === serial);
+  if (!student) return 0;
+  let total = 0, p = 0;
+  Object.keys(records).forEach(k => {
+    if (student.joinedDate && k < student.joinedDate) return;
+    total++;
+    if (records[k].includes(serial)) p++;
+  });
+  return total ? Math.round((p / total) * 100) : 0;
+}
+
+function copyText() {
+  let arr = students.filter(isP).sort((a, b) => a.serial - b.serial);
+  let t = `📌 ATTENDANCE REPORT\nDate: ${fmt(currentDate)}\nBatch: 28 | Section: A\nTotal Present: ${arr.length}/${students.length}\n\n----------------------------------------\nROLL      | NAME\n----------------------------------------\n`;
+  arr.forEach(s => t += `${String(s.serial).padEnd(10)}| ${s.name}\n`);
+  return t + "----------------------------------------\n\nSubmitted by: MD Ahadul Islam Mahin (CR)";
+}
+
+function copyAttendance() {
+  let t = copyText();
+  if (!present.size) {
+    alert("No students selected.");
+    return;
+  }
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(t).then(() => alert("Attendance report copied!")).catch(() => showCopy(t));
+  } else {
+    showCopy(t);
+  }
+}
+
+function shareWhatsApp() {
+  if (!present.size) {
+    alert("No students selected.");
+    return;
+  }
+  const text = copyText();
+  const url = "https://wa.me/?text=" + encodeURIComponent(text);
+  window.open(url, "_blank");
+}
+
+function showCopy(t) {
+  document.getElementById("modalBox").innerHTML = `
+    <h2>Attendance Ready</h2>
+    <p class="stat-summary-text">Clipboard permission নেই। নিচের text-এ long press করে Copy করো।</p>
+    <textarea id="copyArea" class="glass-input" style="width:100%;height:280px;margin-top:10px;font-family:monospace">${t.replace(/</g, "&lt;")}</textarea>
+    <div class="row-actions">
+      <button class="btn primary" onclick="manualCopy()">Copy</button>
+      <button class="btn" onclick="closeModal()">Close</button>
+    </div>
+  `;
+  document.getElementById("modal").classList.add("show");
+  document.getElementById("copyArea").focus();
+  document.getElementById("copyArea").select();
+}
+
+function manualCopy() {
+  let a = document.getElementById("copyArea");
+  a.select();
+  try {
+    document.execCommand("copy");
+    alert("Copied!");
+  } catch (e) {
+    alert("Text selected. Long press and Copy.");
+  }
+}
+
+function openHistory() {
+  let keys = Object.keys(records).sort().reverse();
+  document.getElementById("modalBox").innerHTML = `
+    <h2>📅 Attendance History</h2>
+    ${keys.length ? keys.map(k => `
+      <div class="history-item-card">
+        <div>
+          <b>${fmt(k)}</b>
+          <div class="stat-summary-text">${records[k].length}/${students.length} Present</div>
+        </div>
+        <button class="btn primary" onclick="loadDay('${k}')">Open</button>
+      </div>
+    `).join("") : '<p class="stat-summary-text">No attendance history yet.</p>'}
+    <div class="row-actions"><button class="btn" onclick="closeModal()">Close</button></div>
+  `;
+  document.getElementById("modal").classList.add("show");
+}
+
+function loadDay(k) {
+  currentDate = k;
+  present = new Set(records[k] || []);
+  save();
+  closeModal();
+  render();
+}
+
+function openStudentForm(serial = null) {
+  editSerial = serial;
+  let s = students.find(x => x.serial === serial);
+  document.getElementById("modalBox").innerHTML = `
+    <h2>${s ? "✏️ Edit Student" : "＋ Add Student"}</h2>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <input id="sn" class="glass-input" placeholder="Student name" value="${s ? esc(s.name) : ""}">
+      <input id="si" class="glass-input" placeholder="Student ID" value="${s ? esc(s.studentId) : ""}">
+      <input id="sr" class="glass-input" type="number" placeholder="Roll Number" value="${s ? s.serial : ""}">
+    </div>
+    <div class="row-actions">
+      <button class="btn primary" onclick="saveStudent()">SAVE</button>
+      <button class="btn" onclick="openManage()">BACK</button>
+      ${s ? '<button class="btn danger" onclick="deleteStudent()">DELETE</button>' : ""}
+    </div>
+  `;
+  document.getElementById("modal").classList.add("show");
+}
+
+function openManage() {
+  document.getElementById("modalBox").innerHTML = `
+    <h2>✏️ Manage Students</h2>
+    <button class="btn primary" style="width:100%;margin-bottom:12px" onclick="openStudentForm()">＋ Add New Student</button>
+    <div id="manageList" style="max-height:45vh;overflow-y:auto">
+      ${students.slice().sort((a, b) => a.serial - b.serial).map(s => `
+        <div class="history-item-card">
+          <div>
+            <b>${String(s.serial).padStart(2, "0")} — ${esc(s.name)}</b>
+            <div class="stat-summary-text">ID: ${esc(s.studentId)}</div>
+          </div>
+          <div style="display:flex;gap:6px">
+            <button class="btn" onclick="openStudentForm(${s.serial})">Edit</button>
+            <button class="btn danger" onclick="deleteStudentDirect(${s.serial})">Delete</button>
+          </div>
+        </div>
+      `).join("")}
+    </div>
+    <div class="row-actions" style="margin-top:14px">
+      <button class="btn" onclick="exportBackup()">⬇️ Export Backup</button>
+      <button class="btn" onclick="document.getElementById('restoreInput').click()">⬆️ Restore Backup</button>
+    </div>
+    <input type="file" id="restoreInput" accept="application/json" style="display:none" onchange="importBackup(this)">
+    <div class="row-actions"><button class="btn" onclick="closeModal()">Close</button></div>
+  `;
+  document.getElementById("modal").classList.add("show");
+}
+
+function saveStudent() {
+  let name = document.getElementById("sn").value.trim();
+  let id = document.getElementById("si").value.trim();
+  let roll = Number(document.getElementById("sr").value);
+  if (!name || !id || !roll) {
+    alert("Please fill all fields.");
+    return;
+  }
+  if (students.some(x => x.studentId === id && x.serial !== editSerial)) {
+    alert("This Student ID already exists.");
+    return;
+  }
+  if (editSerial !== null) {
+    let s = students.find(x => x.serial === editSerial);
+    if (roll !== editSerial && students.some(x => x.serial === roll)) {
+      alert("This roll already exists.");
+      return;
+    }
+    s.name = name;
+    s.studentId = id;
+    if (roll !== editSerial) {
+      s.serial = roll;
+      Object.keys(records).forEach(k => {
+        if (records[k].includes(editSerial)) records[k] = records[k].map(x => x === editSerial ? roll : x);
+      });
+      if (present.has(editSerial)) {
+        present.delete(editSerial);
+        present.add(roll);
+      }
+    }
+  } else {
+    if (students.some(x => x.serial === roll)) {
+      alert("This roll already exists.");
+      return;
+    }
+    students.push({ serial: roll, name, studentId: id, joinedDate: todayKey() });
+  }
+  save();
+  openManage();
+  render();
+}
+
+function deleteStudentDirect(serial) {
+  if (confirm("Delete this student permanently?")) {
+    students = students.filter(s => s.serial !== serial);
+    Object.keys(records).forEach(k => records[k] = records[k].filter(x => x !== serial));
+    present.delete(serial);
+    save();
+    openManage();
+    render();
+  }
+}
+
+function deleteStudent() {
+  deleteStudentDirect(editSerial);
+}
+
+function exportBackup() {
+  const data = { students, records, exportedAt: new Date().toISOString() };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `attendance-backup-${todayKey()}.json`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function importBackup(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const data = JSON.parse(e.target.result);
+      if (!Array.isArray(data.students) || typeof data.records !== "object" || data.records === null) throw new Error("bad format");
+      if (!confirm("This will replace all current students and attendance records with the backup file. Continue?")) {
+        input.value = "";
+        return;
+      }
+      students = data.students;
+      records = data.records;
+      present = new Set(records[currentDate] || []);
+      save();
+      openManage();
+      render();
+      alert("Backup restored successfully!");
+    } catch (err) {
+      alert("Could not read this file. Please choose a valid backup JSON file.");
+    }
+    input.value = "";
+  };
+  reader.readAsText(file);
+}
+
+/* ==========================================================================
+   AI VISION EXTRACTION & 100% EXACT MATCH ENGINE
+   ========================================================================== */
+
+let aiFiles = [];
+let aiMatchedList = [];
+let aiUnmatchedList = [];
+let aiNewStudentsList = [];
+let isStudentListScanMode = false;
+
+// 1. Strict Normalization (No silent spelling alterations)
+function normalizeExact(str) {
+  if (!str) return "";
+  return String(str)
+    .trim()
+    .toUpperCase()
+    .replace(/[,\t\r\n]+/g, " ")
+    .replace(/\s+/g, " "); // Collapses multiple spaces only
+}
+
+// 2. Strict 100% Exact Matching Rule
+function matchExtractedParticipant(extracted) {
+  const rawName = normalizeExact(extracted.name || "");
+  const rawId = normalizeExact(extracted.student_id || extracted.id || "");
+  const rawRoll = extracted.roll ? Number(String(extracted.roll).replace(/[^0-9]/g, "")) : null;
+
+  // A. Exact Student ID Match (100% verified)
+  if (rawId) {
+    const student = students.find(s => normalizeExact(s.studentId) === rawId);
+    if (student) {
+      if (rawName && rawName.length > 2) {
+        const dbName = normalizeExact(student.name);
+        if (dbName === rawName || rawName.includes(dbName) || dbName.includes(rawName)) {
+          return { exact: true, student, method: "100% Exact ID & Name", raw: extracted };
+        }
+      }
+      return { exact: true, student, method: "100% Exact Student ID", raw: extracted };
+    }
+  }
+
+  // B. Exact Full Name Match (100% verified)
+  if (rawName) {
+    const student = students.find(s => normalizeExact(s.name) === rawName);
+    if (student) {
+      return { exact: true, student, method: "100% Exact Full Name", raw: extracted };
+    }
+  }
+
+  // C. Exact Roll Match with Exact Substring/Token Match
+  if (rawRoll && rawRoll > 0) {
+    const student = students.find(s => s.serial === rawRoll);
+    if (student) {
+      const dbNorm = normalizeExact(student.name);
+      if (rawName) {
+        if (rawName === dbNorm) {
+          return { exact: true, student, method: "100% Exact Roll & Full Name", raw: extracted };
+        }
+        const dbTokens = dbNorm.split(" ").filter(x => x.length > 2);
+        const rawTokens = rawName.split(" ").filter(x => x.length > 2);
+        const matchTokens = dbTokens.filter(t => rawTokens.includes(t));
+        if (matchTokens.length >= 2 || (dbTokens.length === 1 && matchTokens.length === 1)) {
+          return { exact: true, student, method: "100% Exact Roll & Key Name", raw: extracted };
+        }
+      }
+    }
+  }
+
+  // D. Send to Review Required (Never auto-marked)
+  let candidate = null;
+  let reason = "Student not found in saved list";
+
+  if (rawName) {
+    for (const s of students) {
+      const dbNorm = normalizeExact(s.name);
+      if (rawName.length > 3 && (dbNorm.includes(rawName) || rawName.includes(dbNorm))) {
+        candidate = s;
+        reason = `Spelling mismatch with "${s.name}"`;
+        break;
+      }
+    }
+  }
+  if (!candidate && rawRoll) {
+    const s = students.find(x => x.serial === rawRoll);
+    if (s) {
+      candidate = s;
+      reason = `Roll ${rawRoll} found (${s.name}), but detected name "${rawName || 'none'}" differed`;
+    }
+  }
+  if (!rawName && !rawId && !rawRoll) {
+    reason = "No name, roll or student ID detected in row";
+  }
+
+  return {
+    exact: false,
+    candidate,
+    reason,
+    raw: extracted
+  };
+}
+
+// 3. AI Vision Settings Modal
+function openAISettings() {
+  document.getElementById("modalBox").innerHTML = `
+    <h2>⚙️ AI Scanner Settings</h2>
+    <p class="stat-summary-text">Choose your preferred AI Vision extraction provider.</p>
+    
+    <div style="margin:12px 0">
+      <label style="font-size:13px;font-weight:700;display:block;margin-bottom:6px">AI Engine Provider</label>
+      <select id="cfgProvider" class="glass-input" onchange="toggleProviderFields()">
+        <option value="gemini" ${aiProvider === 'gemini' ? 'selected' : ''}>Google Gemini Vision (Fast / Free Tier API)</option>
+        <option value="openai" ${aiProvider === 'openai' ? 'selected' : ''}>OpenAI GPT-4o Vision</option>
+        <option value="ocr" ${aiProvider === 'ocr' ? 'selected' : ''}>Offline Tesseract OCR (Local, No API Key)</option>
+      </select>
+    </div>
+
+    <div id="geminiBox" style="margin:12px 0;display:${aiProvider === 'gemini' ? 'block' : 'none'}">
+      <label style="font-size:13px;font-weight:700;display:block;margin-bottom:4px">Gemini API Key</label>
+      <input type="password" id="cfgGeminiKey" class="glass-input" placeholder="AIzaSy..." value="${esc(geminiApiKey)}">
+      <div class="stat-summary-text" style="margin-top:4px">Get key from <a href="https://aistudio.google.com/app/apikey" target="_blank" style="color:var(--p)">Google AI Studio</a>. Saved locally in browser.</div>
+    </div>
+
+    <div id="openaiBox" style="margin:12px 0;display:${aiProvider === 'openai' ? 'block' : 'none'}">
+      <label style="font-size:13px;font-weight:700;display:block;margin-bottom:4px">OpenAI API Key</label>
+      <input type="password" id="cfgOpenaiKey" class="glass-input" placeholder="sk-..." value="${esc(openaiApiKey)}">
+      <div class="stat-summary-text" style="margin-top:4px">Saved locally in browser.</div>
+    </div>
+
+    <div class="row-actions">
+      <button class="btn primary" onclick="saveAISettings()">Save</button>
+      <button class="btn" onclick="closeModal()">Cancel</button>
+    </div>
+  `;
+  document.getElementById("modal").classList.add("show");
+}
+
+function toggleProviderFields() {
+  const p = document.getElementById("cfgProvider").value;
+  document.getElementById("geminiBox").style.display = p === "gemini" ? "block" : "none";
+  document.getElementById("openaiBox").style.display = p === "openai" ? "block" : "none";
+}
+
+function saveAISettings() {
+  aiProvider = document.getElementById("cfgProvider").value;
+  geminiApiKey = (document.getElementById("cfgGeminiKey")?.value || "").trim();
+  openaiApiKey = (document.getElementById("cfgOpenaiKey")?.value || "").trim();
+
+  localStorage.setItem("at_ai_provider", aiProvider);
+  localStorage.setItem("at_gemini_key", geminiApiKey);
+  localStorage.setItem("at_openai_key", openaiApiKey);
+
+  closeModal();
+  alert("AI Scanner settings saved!");
+}
+
+// 4. Open AI Scanner UI
+function openAIScanner() {
+  isStudentListScanMode = false;
+  setupScanModal("Upload Screenshots");
+}
+
+function setupScanModal(title = "Upload Screenshots") {
+  aiFiles = [];
+  aiMatchedList = [];
+  aiUnmatchedList = [];
+  aiNewStudentsList = [];
+
+  document.getElementById("modalBox").innerHTML = `
+    <h2>${esc(title)}</h2>
+
+    <label class="aiDrop" id="aiDrop" for="aiInput">
+      <div style="font-size:36px;margin-bottom:4px">📷</div>
+      <b>Tap to select image(s)</b>
+      <input id="aiInput" type="file" accept="image/*" multiple style="display:none" onchange="aiFilesSelected(this.files)">
+    </label>
+    <div id="aiFileList" class="aiFileList" style="display:none"></div>
+
+    <div class="row-actions" style="margin-top:12px">
+      <button class="btn primary" id="aiScanBtn" onclick="executeAIScan()">Scan & Match</button>
+      <button class="btn" onclick="closeModal()">Close</button>
+    </div>
+
+    <div class="aiProgress"><div id="aiProgressBar"></div></div>
+    <div id="aiStatus" class="aiStatus"></div>
+    <div id="aiResults" class="aiResults"></div>
+
+    <div id="aiActions" class="row-actions" style="display:none">
+      <button class="btn success" id="applyAttendanceBtn" onclick="applyScannedAttendance()">✅ Apply Attendance</button>
+      <button class="btn danger" onclick="closeModal()">Cancel</button>
+    </div>
+  `;
+  document.getElementById("modal").classList.add("show");
+
+  const drop = document.getElementById("aiDrop");
+  ["dragenter", "dragover"].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add("drag"); }));
+  ["dragleave", "drop"].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove("drag"); }));
+  drop.addEventListener("drop", e => { aiFilesSelected(e.dataTransfer.files); });
+}
+
+function aiFilesSelected(files) {
+  aiFiles = [...files].filter(f => f.type.startsWith("image/"));
+  const el = document.getElementById("aiFileList");
+  if (!el) return;
+  if (aiFiles.length) {
+    el.style.display = "block";
+    el.innerHTML = `<span style="font-weight:600;color:var(--ok)">✓ ${aiFiles.length} image(s) selected</span>`;
+  } else {
+    el.style.display = "none";
+    el.innerHTML = "";
+  }
+  document.getElementById("aiResults").innerHTML = "";
+  document.getElementById("aiActions").style.display = "none";
+}
+
+function fileToBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const b64 = reader.result.split(",")[1];
+      resolve({ base64: b64, mimeType: file.type || "image/jpeg" });
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+// 5. Multi-Image Scan Execution
+async function executeAIScan() {
+  if (!aiFiles.length) {
+    alert("Please select at least one screenshot or image.");
+    return;
+  }
+
+  const btn = document.getElementById("aiScanBtn");
+  const status = document.getElementById("aiStatus");
+  const bar = document.getElementById("aiProgressBar");
+  btn.disabled = true;
+  status.textContent = "Analyzing image(s)…";
+  bar.style.width = "10%";
+
+  aiMatchedList = [];
+  aiUnmatchedList = [];
+  aiNewStudentsList = [];
+
+  try {
+    let allExtracted = [];
+
+    if (aiProvider === "gemini") {
+      if (!geminiApiKey) {
+        alert("Please set your Gemini API Key in Settings (⚙️).");
+        openAISettings();
+        btn.disabled = false;
+        return;
+      }
+      allExtracted = await extractWithGemini(aiFiles, status, bar);
+    } else if (aiProvider === "openai") {
+      if (!openaiApiKey) {
+        alert("Please set your OpenAI API Key in Settings (⚙️).");
+        openAISettings();
+        btn.disabled = false;
+        return;
+      }
+      allExtracted = await extractWithOpenAI(aiFiles, status, bar);
+    } else {
+      allExtracted = await extractWithLocalOCR(aiFiles, status, bar);
+    }
+
+    status.textContent = `Running 100% exact matching engine…`;
+    bar.style.width = "90%";
+
+    // Deduplicate extracted records
+    const seenRaw = new Set();
+    const uniqueExtracted = [];
+    for (const item of allExtracted) {
+      const key = `${item.roll || ""}-${normalizeExact(item.name || "")}-${item.student_id || ""}`;
+      if (key.length > 2 && !seenRaw.has(key)) {
+        seenRaw.add(key);
+        uniqueExtracted.push(item);
+      }
+    }
+
+    // Apply strict matching
+    const seenStudentSerials = new Set();
+    for (const item of uniqueExtracted) {
+      const matchRes = matchExtractedParticipant(item);
+      if (matchRes.exact) {
+        if (!seenStudentSerials.has(matchRes.student.serial)) {
+          seenStudentSerials.add(matchRes.student.serial);
+          aiMatchedList.push({
+            student: matchRes.student,
+            method: matchRes.method,
+            raw: item,
+            selected: true
+          });
+        }
+      } else {
+        aiUnmatchedList.push(matchRes);
+      }
+    }
+
+    aiMatchedList.sort((a, b) => a.student.serial - b.student.serial);
+    renderAIResults();
+
+    bar.style.width = "100%";
+    status.textContent = `Found ${aiMatchedList.length} exact match(es), ${aiUnmatchedList.length} for review.`;
+    document.getElementById("aiActions").style.display = (aiMatchedList.length || aiUnmatchedList.length) ? "flex" : "none";
+
+  } catch (err) {
+    console.error(err);
+    status.textContent = "AI scan failed: " + (err.message || "Unknown error");
+    alert("Scan Error: " + (err.message || "Check network/API key."));
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+// 6. Gemini Vision API Extraction
+async function extractWithGemini(files, statusEl, barEl) {
+  let combined = [];
+  const systemPrompt = `You are a high-precision attendance OCR extraction assistant.
+Look at the image of Google Meet participants list or student roster.
+Extract EVERY visible participant or student.
+Return ONLY valid JSON matching this schema:
+{
+  "participants": [
+    {
+      "name": "Full name exactly as written",
+      "roll": "Roll number if visible, otherwise empty string",
+      "student_id": "Student ID number if visible, otherwise empty string"
+    }
+  ]
+}
+Ignore interface buttons, "You", mute icons, headers, meeting links, timestamps.
+Do NOT invent values. If no name/id/roll is found, leave empty string.`;
+
+  for (let i = 0; i < files.length; i++) {
+    statusEl.textContent = `Gemini Vision analyzing image ${i + 1} of ${files.length}…`;
+    barEl.style.width = Math.round(((i + 0.3) / files.length) * 80) + "%";
+
+    const { base64, mimeType } = await fileToBase64(files[i]);
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiApiKey}`;
+
+    const body = {
+      contents: [{
+        parts: [
+          { text: systemPrompt },
+          { inline_data: { mime_type: mimeType, data: base64 } }
+        ]
+      }],
+      generationConfig: {
+        response_mime_type: "application/json"
+      }
+    };
+
+    const res = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body)
+    });
+
+    if (!res.ok) {
+      const errTxt = await res.text();
+      throw new Error(`Gemini API error (${res.status}): ${errTxt}`);
+    }
+
+    const data = await res.json();
+    const candidate = data.candidates?.[0]?.content?.parts?.[0]?.text;
+    if (candidate) {
+      try {
+        const parsed = JSON.parse(candidate);
+        if (Array.isArray(parsed.participants)) {
+          combined.push(...parsed.participants);
+        }
+      } catch (e) {
+        console.warn("Could not parse JSON from Gemini response:", candidate);
+      }
+    }
+  }
+  return combined;
+}
+
+// 7. OpenAI GPT-4o Vision API Extraction
+async function extractWithOpenAI(files, statusEl, barEl) {
+  let combined = [];
+  for (let i = 0; i < files.length; i++) {
+    statusEl.textContent = `GPT-4o Vision analyzing image ${i + 1} of ${files.length}…`;
+    barEl.style.width = Math.round(((i + 0.3) / files.length) * 80) + "%";
+
+    const { base64, mimeType } = await fileToBase64(files[i]);
+    const res = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${openaiApiKey}`
+      },
+      body: JSON.stringify({
+        model: "gpt-4o",
+        messages: [
+          {
+            role: "system",
+            content: "You extract student/participant records from Google Meet screenshots or classroom lists. Return JSON only: {\"participants\": [{\"name\":\"...\",\"roll\":\"...\",\"student_id\":\"...\"}]}. Ignore UI noise."
+          },
+          {
+            role: "user",
+            content: [
+              { type: "text", text: "Extract all visible participants." },
+              { type: "image_url", image_url: { url: `data:${mimeType};base64,${base64}` } }
+            ]
+          }
+        ],
+        response_format: { type: "json_object" }
+      })
+    });
+
+    if (!res.ok) {
+      const errTxt = await res.text();
+      throw new Error(`OpenAI API error (${res.status}): ${errTxt}`);
+    }
+
+    const data = await res.json();
+    const txt = data.choices?.[0]?.message?.content;
+    if (txt) {
+      try {
+        const parsed = JSON.parse(txt);
+        if (Array.isArray(parsed.participants)) combined.push(...parsed.participants);
+      } catch (e) {
+        console.warn("Parse error OpenAI:", txt);
+      }
+    }
+  }
+  return combined;
+}
+
+// 8. Offline Fallback OCR Extraction (Tesseract)
+async function extractWithLocalOCR(files, statusEl, barEl) {
+  if (!window.Tesseract) {
+    throw new Error("Tesseract OCR library is not loaded. Please connect to internet or use API key.");
+  }
+  statusEl.textContent = "Initializing local OCR engine…";
+  const worker = await Tesseract.createWorker("eng");
+  let combined = [];
+
+  for (let i = 0; i < files.length; i++) {
+    statusEl.textContent = `OCR reading image ${i + 1} of ${files.length}…`;
+    barEl.style.width = Math.round(((i + 0.3) / files.length) * 80) + "%";
+
+    const ret = await worker.recognize(files[i]);
+    const lines = ret.data.text.split(/\r?\n/).map(l => l.trim()).filter(l => l.length > 2);
+
+    for (const line of lines) {
+      const idMatch = line.match(/\b\d{9,12}\b/);
+      const rollMatch = line.match(/\b\d{1,3}\b/);
+      const cleanName = line.replace(/\b\d+\b/g, "").replace(/[^A-Za-z.\s]/g, " ").trim();
+
+      combined.push({
+        name: cleanName,
+        roll: rollMatch ? rollMatch[0] : "",
+        student_id: idMatch ? idMatch[0] : ""
+      });
+    }
+  }
+  await worker.terminate();
+  return combined;
+}
+
+// 9. Render Results UI
+function renderAIResults() {
+  const el = document.getElementById("aiResults");
+  if (!el) return;
+
+  let html = "";
+
+  // 100% Exact Match Section
+  html += `<div class="ai-section-title matched">🟢 MATCHED — 100% EXACT (${aiMatchedList.length})</div>`;
+  if (aiMatchedList.length) {
+    html += aiMatchedList.map((m, i) => `
+      <label class="aiRow matched-row">
+        <input type="checkbox" ${m.selected ? 'checked' : ''} onchange="aiMatchedList[${i}].selected=this.checked">
+        <div style="flex:1;min-width:0">
+          <div style="font-weight:700">${String(m.student.serial).padStart(2, "0")} — ${esc(m.student.name)}</div>
+          <div class="stat-summary-text">ID: ${esc(m.student.studentId)}</div>
+        </div>
+        <span class="aiBadge exact">✓ ${esc(m.method)}</span>
+      </label>
+    `).join("");
+  } else {
+    html += `<div class="stat-summary-text" style="padding:6px 0">No 100% exact matches found.</div>`;
+  }
+
+  // Unmatched / Review Required Section
+  html += `<div class="ai-section-title unmatched" style="margin-top:16px">⚠️ UNMATCHED / REVIEW REQUIRED (${aiUnmatchedList.length})</div>`;
+  if (aiUnmatchedList.length) {
+    html += aiUnmatchedList.map((u, i) => {
+      const detName = u.raw.name || "(no name)";
+      const detRoll = u.raw.roll ? `Roll ${u.raw.roll}` : "";
+      const detId = u.raw.student_id ? `ID ${u.raw.student_id}` : "";
+      const meta = [detRoll, detId].filter(Boolean).join(" • ");
+
+      return `
+        <div class="aiRow unmatched-row" style="cursor:default">
+          <div style="flex:1;min-width:0">
+            <div style="font-weight:700">Detected: "${esc(detName)}"</div>
+            ${meta ? `<div class="stat-summary-text">${esc(meta)}</div>` : ''}
+            <div style="font-size:11.5px;color:var(--warn);margin-top:3px;font-weight:600">
+              Reason: ${esc(u.reason)}
+            </div>
+            ${u.candidate ? `<div class="stat-summary-text" style="font-size:11px">Saved Student: ${String(u.candidate.serial).padStart(2,"0")} - ${esc(u.candidate.name)}</div>` : ''}
+          </div>
+          <button class="btn" style="padding:6px 10px;font-size:11.5px" onclick="manuallyMarkPresent(${i})">Mark Present</button>
+        </div>
+      `;
+    }).join("");
+  } else {
+    html += `<div class="stat-summary-text" style="padding:6px 0">No unmatched participants.</div>`;
+  }
+
+  el.innerHTML = html;
+}
+
+// 10. Manual resolution for review items
+function manuallyMarkPresent(index) {
+  const item = aiUnmatchedList[index];
+  if (!item) return;
+
+  if (item.candidate) {
+    if (confirm(`Mark "${item.candidate.name}" (Roll ${item.candidate.serial}) Present?`)) {
+      present.add(item.candidate.serial);
+      aiUnmatchedList.splice(index, 1);
+      renderAIResults();
+      save();
+      render();
+    }
+  } else {
+    const roll = prompt(`Enter Roll number to mark present for "${item.raw.name || 'this participant'}":`);
+    const rNum = Number(roll);
+    const found = students.find(s => s.serial === rNum);
+    if (found) {
+      present.add(found.serial);
+      aiUnmatchedList.splice(index, 1);
+      renderAIResults();
+      save();
+      render();
+      alert(`Marked Roll ${found.serial} (${found.name}) as Present!`);
+    } else if (roll) {
+      alert("No student with that roll number.");
+    }
+  }
+}
+
+// 11. Apply Scanned Attendance to Database
+function applyScannedAttendance() {
+  const confirmed = aiMatchedList.filter(x => x.selected);
+  if (!confirmed.length) {
+    alert("No matched students selected to apply.");
+    return;
+  }
+
+  let addedCount = 0;
+  for (const item of confirmed) {
+    if (!present.has(item.student.serial)) {
+      present.add(item.student.serial);
+      addedCount++;
+    }
+  }
+
+  save();
+  render();
+  closeModal();
+  alert(`Applied attendance! Marked ${confirmed.length} student(s) Present (${addedCount} newly added).`);
+}
+
+function closeModal() {
+  document.getElementById("modal").classList.remove("show");
+}
+
+render();
+</script>
+</body>
+</html>
